@@ -159,7 +159,7 @@ class GengoJobsTests: XCTestCase {
     func testCreateJobs() {
         gengo.createJobs(testJobs) {order, error in
             if let e = error {
-                if e.code == 2700 { // not enough credits
+                if e.code == GengoErrorCode.NotEnoughCredits.rawValue {
                     self.expectation!.fulfill()
                     return
                 }

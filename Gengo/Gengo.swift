@@ -52,8 +52,11 @@ extension Gengo {
     }
 }
 
+public enum GengoErrorCode: Int {
+    case NotEnoughCredits = 2700
+}
+
 public class GengoError: NSError {
-    // TODO make this private
     init?(optionalData: NSData?, optionalResponse: NSURLResponse?, optionalError: NSError?) {
         let GENGO_DOMAIN = "com.gengo.api"
         
