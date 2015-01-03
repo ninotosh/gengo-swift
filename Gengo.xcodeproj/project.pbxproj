@@ -1,0 +1,448 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		998D261E1A56DEBD00063DE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998D261D1A56DEBD00063DE0 /* AppDelegate.swift */; };
+		998D26201A56DEBD00063DE0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998D261F1A56DEBD00063DE0 /* ViewController.swift */; };
+		998D26231A56DEBD00063DE0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 998D26211A56DEBD00063DE0 /* Main.storyboard */; };
+		998D26251A56DEBD00063DE0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 998D26241A56DEBD00063DE0 /* Images.xcassets */; };
+		998D26281A56DEBD00063DE0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 998D26261A56DEBD00063DE0 /* LaunchScreen.xib */; };
+		998D26341A56DEBD00063DE0 /* GengoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998D26331A56DEBD00063DE0 /* GengoTests.swift */; };
+		998D263E1A56DFED00063DE0 /* Gengo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998D263D1A56DFED00063DE0 /* Gengo.swift */; };
+		998D263F1A56DFED00063DE0 /* Gengo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998D263D1A56DFED00063DE0 /* Gengo.swift */; };
+		998D26411A56E15500063DE0 /* GengoRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998D26401A56E15500063DE0 /* GengoRequest.swift */; };
+		998D26421A56E15500063DE0 /* GengoRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998D26401A56E15500063DE0 /* GengoRequest.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		998D262E1A56DEBD00063DE0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 998D26101A56DEBD00063DE0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 998D26171A56DEBD00063DE0;
+			remoteInfo = Gengo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		998D26181A56DEBD00063DE0 /* Gengo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gengo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		998D261C1A56DEBD00063DE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		998D261D1A56DEBD00063DE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		998D261F1A56DEBD00063DE0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		998D26221A56DEBD00063DE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		998D26241A56DEBD00063DE0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		998D26271A56DEBD00063DE0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		998D262D1A56DEBD00063DE0 /* GengoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GengoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		998D26321A56DEBD00063DE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		998D26331A56DEBD00063DE0 /* GengoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GengoTests.swift; sourceTree = "<group>"; };
+		998D263D1A56DFED00063DE0 /* Gengo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gengo.swift; sourceTree = "<group>"; };
+		998D26401A56E15500063DE0 /* GengoRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GengoRequest.swift; sourceTree = "<group>"; };
+		998D264F1A56EC0D00063DE0 /* Gengo-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Gengo-Bridging-Header.h"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		998D26151A56DEBD00063DE0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		998D262A1A56DEBD00063DE0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		998D260F1A56DEBD00063DE0 = {
+			isa = PBXGroup;
+			children = (
+				998D261A1A56DEBD00063DE0 /* Gengo */,
+				998D26301A56DEBD00063DE0 /* GengoTests */,
+				998D26191A56DEBD00063DE0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		998D26191A56DEBD00063DE0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				998D26181A56DEBD00063DE0 /* Gengo.app */,
+				998D262D1A56DEBD00063DE0 /* GengoTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		998D261A1A56DEBD00063DE0 /* Gengo */ = {
+			isa = PBXGroup;
+			children = (
+				998D261D1A56DEBD00063DE0 /* AppDelegate.swift */,
+				998D261F1A56DEBD00063DE0 /* ViewController.swift */,
+				998D26211A56DEBD00063DE0 /* Main.storyboard */,
+				998D26241A56DEBD00063DE0 /* Images.xcassets */,
+				998D26261A56DEBD00063DE0 /* LaunchScreen.xib */,
+				998D261B1A56DEBD00063DE0 /* Supporting Files */,
+				998D263D1A56DFED00063DE0 /* Gengo.swift */,
+				998D26401A56E15500063DE0 /* GengoRequest.swift */,
+				998D264F1A56EC0D00063DE0 /* Gengo-Bridging-Header.h */,
+			);
+			path = Gengo;
+			sourceTree = "<group>";
+		};
+		998D261B1A56DEBD00063DE0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				998D261C1A56DEBD00063DE0 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		998D26301A56DEBD00063DE0 /* GengoTests */ = {
+			isa = PBXGroup;
+			children = (
+				998D26331A56DEBD00063DE0 /* GengoTests.swift */,
+				998D26311A56DEBD00063DE0 /* Supporting Files */,
+			);
+			path = GengoTests;
+			sourceTree = "<group>";
+		};
+		998D26311A56DEBD00063DE0 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				998D26321A56DEBD00063DE0 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		998D26171A56DEBD00063DE0 /* Gengo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 998D26371A56DEBD00063DE0 /* Build configuration list for PBXNativeTarget "Gengo" */;
+			buildPhases = (
+				998D26141A56DEBD00063DE0 /* Sources */,
+				998D26151A56DEBD00063DE0 /* Frameworks */,
+				998D26161A56DEBD00063DE0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Gengo;
+			productName = Gengo;
+			productReference = 998D26181A56DEBD00063DE0 /* Gengo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		998D262C1A56DEBD00063DE0 /* GengoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 998D263A1A56DEBD00063DE0 /* Build configuration list for PBXNativeTarget "GengoTests" */;
+			buildPhases = (
+				998D26291A56DEBD00063DE0 /* Sources */,
+				998D262A1A56DEBD00063DE0 /* Frameworks */,
+				998D262B1A56DEBD00063DE0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				998D262F1A56DEBD00063DE0 /* PBXTargetDependency */,
+			);
+			name = GengoTests;
+			productName = GengoTests;
+			productReference = 998D262D1A56DEBD00063DE0 /* GengoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		998D26101A56DEBD00063DE0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = Gengo;
+				TargetAttributes = {
+					998D26171A56DEBD00063DE0 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					998D262C1A56DEBD00063DE0 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = 998D26171A56DEBD00063DE0;
+					};
+				};
+			};
+			buildConfigurationList = 998D26131A56DEBD00063DE0 /* Build configuration list for PBXProject "Gengo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 998D260F1A56DEBD00063DE0;
+			productRefGroup = 998D26191A56DEBD00063DE0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				998D26171A56DEBD00063DE0 /* Gengo */,
+				998D262C1A56DEBD00063DE0 /* GengoTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		998D26161A56DEBD00063DE0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				998D26231A56DEBD00063DE0 /* Main.storyboard in Resources */,
+				998D26281A56DEBD00063DE0 /* LaunchScreen.xib in Resources */,
+				998D26251A56DEBD00063DE0 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		998D262B1A56DEBD00063DE0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		998D26141A56DEBD00063DE0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				998D26201A56DEBD00063DE0 /* ViewController.swift in Sources */,
+				998D263E1A56DFED00063DE0 /* Gengo.swift in Sources */,
+				998D26411A56E15500063DE0 /* GengoRequest.swift in Sources */,
+				998D261E1A56DEBD00063DE0 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		998D26291A56DEBD00063DE0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				998D26421A56E15500063DE0 /* GengoRequest.swift in Sources */,
+				998D263F1A56DFED00063DE0 /* Gengo.swift in Sources */,
+				998D26341A56DEBD00063DE0 /* GengoTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		998D262F1A56DEBD00063DE0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 998D26171A56DEBD00063DE0 /* Gengo */;
+			targetProxy = 998D262E1A56DEBD00063DE0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		998D26211A56DEBD00063DE0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				998D26221A56DEBD00063DE0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		998D26261A56DEBD00063DE0 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				998D26271A56DEBD00063DE0 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		998D26351A56DEBD00063DE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		998D26361A56DEBD00063DE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		998D26381A56DEBD00063DE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				INFOPLIST_FILE = Gengo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Gengo/Gengo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		998D26391A56DEBD00063DE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				INFOPLIST_FILE = Gengo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Gengo/Gengo-Bridging-Header.h";
+			};
+			name = Release;
+		};
+		998D263B1A56DEBD00063DE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = GengoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Gengo/Gengo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Gengo.app/Gengo";
+			};
+			name = Debug;
+		};
+		998D263C1A56DEBD00063DE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = GengoTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Gengo/Gengo-Bridging-Header.h";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Gengo.app/Gengo";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		998D26131A56DEBD00063DE0 /* Build configuration list for PBXProject "Gengo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				998D26351A56DEBD00063DE0 /* Debug */,
+				998D26361A56DEBD00063DE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		998D26371A56DEBD00063DE0 /* Build configuration list for PBXNativeTarget "Gengo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				998D26381A56DEBD00063DE0 /* Debug */,
+				998D26391A56DEBD00063DE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		998D263A1A56DEBD00063DE0 /* Build configuration list for PBXNativeTarget "GengoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				998D263B1A56DEBD00063DE0 /* Debug */,
+				998D263C1A56DEBD00063DE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 998D26101A56DEBD00063DE0 /* Project object */;
+}

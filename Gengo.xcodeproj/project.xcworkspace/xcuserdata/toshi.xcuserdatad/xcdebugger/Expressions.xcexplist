@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "GengoTests.GengoTests.(testGetQuoteText (GengoTests.GengoTests) -&gt; () -&gt; ()).(closure #1):GengoTests.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tests[i][&quot;unitCount&quot;] as Int">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GengoTests.GengoTests.(testGetQuoteText (GengoTests.GengoTests) -&gt; () -&gt; ()).(closure #1).(implicit closure #4):GengoTests.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "jobs">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

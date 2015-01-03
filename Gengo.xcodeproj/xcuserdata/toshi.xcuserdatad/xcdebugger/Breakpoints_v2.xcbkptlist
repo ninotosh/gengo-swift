@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "GengoTests/GengoTests.swift"
+            timestampString = "441952946.398368"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
+            landmarkName = "testGetQuoteFileAndCreateJobs()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GengoTests.GengoTests.(testGetQuoteFileAndCreateJobs (GengoTests.GengoTests) -&gt; () -&gt; ()).(closure #1).(closure #1)"
+                  moduleName = "GengoTests"
+                  urlString = "file:///Users/toshi/cloud/Dropbox/workspace/ninotoshi/gengo-swift/GengoTests/GengoTests.swift"
+                  timestampString = "441918777.823495"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "444">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GengoTests.GengoTests.(testGetQuoteFileAndCreateJobs (GengoTests.GengoTests) -&gt; () -&gt; ()).(closure #1).(closure #1).(implicit closure #3)"
+                  moduleName = "GengoTests"
+                  urlString = "file:///Users/toshi/cloud/Dropbox/workspace/ninotoshi/gengo-swift/GengoTests/GengoTests.swift"
+                  timestampString = "441918777.824298"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "21">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "GengoTests.GengoTests.(testGetQuoteFileAndCreateJobs (GengoTests.GengoTests) -&gt; () -&gt; ()).(closure #1).(closure #1).(implicit closure #4)"
+                  moduleName = "GengoTests"
+                  urlString = "file:///Users/toshi/cloud/Dropbox/workspace/ninotoshi/gengo-swift/GengoTests/GengoTests.swift"
+                  timestampString = "441918777.824472"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "8">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
