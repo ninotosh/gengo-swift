@@ -1,44 +1,42 @@
 import UIKit
 import XCTest
 
-class GengoTests: XCTestCase {
-    let TIMEOUT: NSTimeInterval = 5
-    let gengo = Gengo(
-        publicKey: "EV6nE@gBD8]VB2aX1507)I[^OXmG^PyXIiwncr5nZ68D|Tq25(7XwPF7oZw}BpT5",
-        privateKey: "gaxi4i58IbaLIz@slxAmKeV}PlS@uLd83jG$XiSRBZphUX@Y0$8$7mFH1c3(uxAJ",
-        sandbox: true
-    )
+let TIMEOUT: NSTimeInterval = 5
+let gengo = Gengo(
+    publicKey: "EV6nE@gBD8]VB2aX1507)I[^OXmG^PyXIiwncr5nZ68D|Tq25(7XwPF7oZw}BpT5",
+    privateKey: "gaxi4i58IbaLIz@slxAmKeV}PlS@uLd83jG$XiSRBZphUX@Y0$8$7mFH1c3(uxAJ",
+    sandbox: true
+)
 
-    var expectation: XCTestExpectation?
-    
-    let testJobs = [
-        GengoJob(
-            languagePair: GengoLanguagePair(
-                source: GengoLanguage(code: "en"),
-                target: GengoLanguage(code: "ja"),
-                tier: GengoTier.Standard
-            ),
-            sourceText: "Testing Gengo API library calls."
+let testJobs = [
+    GengoJob(
+        languagePair: GengoLanguagePair(
+            source: GengoLanguage(code: "en"),
+            target: GengoLanguage(code: "ja"),
+            tier: GengoTier.Standard
         ),
-        GengoJob(
-            languagePair: GengoLanguagePair(
-                source: GengoLanguage(code: "ja"),
-                target: GengoLanguage(code: "en"),
-                tier: GengoTier.Standard
-            ),
-            sourceText: "API呼出しのテスト",
-            slug: "テストslug"
-        )
-    ]
+        sourceText: "Testing Gengo API library calls."
+    ),
+    GengoJob(
+        languagePair: GengoLanguagePair(
+            source: GengoLanguage(code: "ja"),
+            target: GengoLanguage(code: "en"),
+            tier: GengoTier.Standard
+        ),
+        sourceText: "API呼出しのテスト",
+        slug: "テストslug"
+    )
+]
+
+class GengoServiceTests: XCTestCase {
+    var expectation: XCTestExpectation?
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
         expectation = expectationWithDescription("GengoTests")
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
     
@@ -106,7 +104,7 @@ class GengoTests: XCTestCase {
         waitForExpectationsWithTimeout(TIMEOUT, nil)
     }
     
-    func testGetQuoteFileAndCreateJobs() {
+    func testGetQuoteFile() {
         var fileJobs: Array<GengoJob> = []
         for (i, job) in enumerate(testJobs) {
             fileJobs.append(
@@ -140,33 +138,49 @@ class GengoTests: XCTestCase {
                 XCTAssertGreaterThan(job.credit!.amount, 0.0 as Float)
                 XCTAssertFalse(job.identifier!.isEmpty)
             }
-            
-            // test createJobs()
-            self.gengo.createJobs(jobs) {order, error in
-                if let e = error {
-                    if e.code == 2700 { // not enough credits
-                        self.expectation!.fulfill()
-                        return
-                    }
-                    XCTFail("error is not nil: \(e)")
-                }
-                
-                if let o = order {
-                    XCTAssertGreaterThanOrEqual(o.id, 0)
-                    XCTAssertGreaterThanOrEqual(o.money.amount, 0.0 as Float)
-                    XCTAssertEqual(o.jobCount, countElements(jobs))
-                } else {
-                    if error == nil { // all the jobs are duplicates
-                        self.expectation!.fulfill()
-                        return
-                    }
-                    XCTFail("order is nil")
-                }
-                
-                self.expectation!.fulfill()
-            }
         }
 
+        waitForExpectationsWithTimeout(TIMEOUT * 2, nil)
+    }
+}
+
+class GengoJobsTests: XCTestCase {
+    var expectation: XCTestExpectation?
+    
+    override func setUp() {
+        super.setUp()
+        expectation = expectationWithDescription("GengoTests")
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+    }
+
+    func testCreateJobs() {
+        gengo.createJobs(testJobs) {order, error in
+            if let e = error {
+                if e.code == 2700 { // not enough credits
+                    self.expectation!.fulfill()
+                    return
+                }
+                XCTFail("error is not nil: \(e)")
+            }
+            
+            if let o = order {
+                XCTAssertGreaterThanOrEqual(o.id, 0)
+                XCTAssertGreaterThanOrEqual(o.money.amount, 0.0 as Float)
+                XCTAssertGreaterThanOrEqual(o.jobCount, 0)
+            } else {
+                if error == nil { // all the jobs are duplicates
+                    self.expectation!.fulfill()
+                    return
+                }
+                XCTFail("order is nil")
+            }
+            
+            self.expectation!.fulfill()
+        }
+        
         waitForExpectationsWithTimeout(TIMEOUT * 2, nil)
     }
 }
