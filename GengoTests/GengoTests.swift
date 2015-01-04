@@ -33,7 +33,7 @@ class GengoServiceTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = expectationWithDescription("GengoTests")
+        expectation = expectationWithDescription("GengoServiceTests")
     }
     
     override func tearDown() {
@@ -78,7 +78,7 @@ class GengoServiceTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, nil)
+        waitForExpectationsWithTimeout(TIMEOUT*9999, nil)
     }
     
     func testGetQuoteText() {
@@ -105,7 +105,7 @@ class GengoServiceTests: XCTestCase {
     }
     
     func testGetQuoteFile() {
-        var fileJobs: Array<GengoJob> = []
+        var fileJobs: [GengoJob] = []
         for (i, job) in enumerate(testJobs) {
             fileJobs.append(
                 GengoJob(
@@ -151,7 +151,7 @@ class GengoJobsTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = expectationWithDescription("GengoTests")
+        expectation = expectationWithDescription("GengoJobsTests")
     }
     
     override func tearDown() {
@@ -170,7 +170,7 @@ class GengoJobsTests: XCTestCase {
             
             if let o = order {
                 XCTAssertGreaterThanOrEqual(o.id, 0)
-                XCTAssertGreaterThanOrEqual(o.money.amount, 0.0 as Float)
+                XCTAssertGreaterThanOrEqual(o.money!.amount, 0.0 as Float)
                 XCTAssertGreaterThanOrEqual(o.jobCount, 0)
             } else {
                 if error == nil { // all the jobs are duplicates
@@ -179,6 +179,51 @@ class GengoJobsTests: XCTestCase {
                 }
                 XCTFail("order is nil")
             }
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testGetJobsWithParameters() {
+        var parameters: [String: Any] = ["count": 1]
+        gengo.getJobs(parameters: parameters) {jobs, error in
+            XCTAssertNil(error)
+            XCTAssertEqual(countElements(jobs), 1)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testGetJobsWithIDs() {
+        gengo.getJobs([1215564]) {jobs, error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+}
+
+class GengoOrderTests: XCTestCase {
+    var expectation: XCTestExpectation?
+    
+    override func setUp() {
+        super.setUp()
+        expectation = expectationWithDescription("GengoOrderTests")
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+    }
+    
+    func testGetOrder() {
+        gengo.getOrder(321281) {order, error in
+            XCTAssertNil(error)
             
             self.expectation!.fulfill()
         }

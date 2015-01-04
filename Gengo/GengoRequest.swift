@@ -45,17 +45,18 @@ public class GengoRequest: NSMutableURLRequest {
     }
     
     var queryString: String {
-        var pairs: Array<String> = []
+        var pairs: [String] = []
         for (key, value) in parameters {
-            let v = value.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet(charactersInString: ""))!
-            pairs.append("\(key)=\(v)")
+            if let v = value.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet(charactersInString: "")) {
+                pairs.append("\(key)=\(v)")
+            }
         }
         
         return "&".join(pairs)
     }
     
-    var parameters: [String: AnyObject] {
-        var p: [String: AnyObject] = [:]
+    var parameters: [String: String] {
+        var p: [String: String] = [:]
         p["api_key"] = apiKey
         p["ts"] = timestamp
         p["api_sig"] = apiSignature
@@ -67,7 +68,7 @@ public class GengoRequest: NSMutableURLRequest {
     }
     
     private var timestamp: String {
-        return Int(now.timeIntervalSince1970).description
+        return String(Int(now.timeIntervalSince1970))
     }
     
     private var apiSignature: String {
@@ -108,8 +109,11 @@ class GengoGet: GengoRequest {
         return super.url + "?" + queryString
     }
     
-    override var parameters: [String: AnyObject] {
-        var p = queries
+    override var parameters: [String: String] {
+        var p: [String: String] = [:]
+        for (key, value) in queries {
+            p[key] = value.description
+        }
         for (key, value) in super.parameters {
             p[key] = value
         }
@@ -132,7 +136,7 @@ class GengoPost: GengoRequest {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override var parameters: [String: AnyObject] {
+    override var parameters: [String: String] {
         var p = super.parameters
         let bodyData = NSJSONSerialization.dataWithJSONObject(body, options: nil, error: nil)
         p["data"] = NSString(data: bodyData!, encoding: NSUTF8StringEncoding)!
