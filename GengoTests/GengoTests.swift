@@ -8,25 +8,31 @@ let gengo = Gengo(
     sandbox: true
 )
 
-let testJobs = [
-    GengoJob(
-        languagePair: GengoLanguagePair(
+class GengoFixtures {
+    var job1 = GengoJob()
+    var job2 = GengoJob()
+    
+    init() {
+        job1.languagePair = GengoLanguagePair(
             source: GengoLanguage(code: "en"),
             target: GengoLanguage(code: "ja"),
             tier: GengoTier.Standard
-        ),
-        sourceText: "Testing Gengo API library calls."
-    ),
-    GengoJob(
-        languagePair: GengoLanguagePair(
+        )
+        job1.sourceText = "Testing Gengo API library calls."
+        
+        job2.languagePair = GengoLanguagePair(
             source: GengoLanguage(code: "ja"),
             target: GengoLanguage(code: "en"),
             tier: GengoTier.Standard
-        ),
-        sourceText: "API呼出しのテスト",
-        slug: "テストslug"
-    )
-]
+        )
+        job2.sourceText = "API呼出しのテスト"
+        job2.slug = "テストslug"
+    }
+    
+    var testJobs: [GengoJob] {
+        return [job1, job2]
+    }
+}
 
 class GengoServiceTests: XCTestCase {
     var expectation: XCTestExpectation?
@@ -82,15 +88,15 @@ class GengoServiceTests: XCTestCase {
     }
     
     func testGetQuoteText() {
-        gengo.getQuoteText(testJobs) {jobs, error in
+        gengo.getQuoteText(GengoFixtures().testJobs) {jobs, error in
             XCTAssertNil(error)
             XCTAssertGreaterThan(countElements(jobs), 0)
             
             // the job order in `jobs` may be different from that in `tests`
             for job in jobs {
-                if job.languagePair.source.code == "ja" {
+                if job.languagePair!.source.code == "ja" {
                     XCTAssertEqual(job.unitCount!, 8)
-                } else if job.languagePair.source.code == "en" {
+                } else if job.languagePair!.source.code == "en" {
                     XCTAssertEqual(job.unitCount!, 5)
                 } else {
                     XCTFail("invalid source language")
@@ -106,20 +112,18 @@ class GengoServiceTests: XCTestCase {
     
     func testGetQuoteFile() {
         var fileJobs: [GengoJob] = []
-        for (i, job) in enumerate(testJobs) {
-            fileJobs.append(
-                GengoJob(
-                    languagePair: job.languagePair,
-                    sourceFile: GengoFile(
-                        data: job.sourceText!.dataUsingEncoding(NSUTF8StringEncoding)!,
-                        name: "\(i).txt"
-                    )
-                )
+        for (i, job) in enumerate(GengoFixtures().testJobs) {
+            var fileJob = GengoJob()
+            fileJob.languagePair = job.languagePair
+            fileJob.sourceFile = GengoFile(
+                data: job.sourceText!.dataUsingEncoding(NSUTF8StringEncoding)!,
+                name: "\(i).txt"
             )
+            fileJobs.append(fileJob)
         }
         
         for job in fileJobs {
-            XCTAssertEqual(job.type, GengoJobType.File)
+            XCTAssertEqual(job.type!, GengoJobType.File)
         }
         
         gengo.getQuoteFile(fileJobs) {jobs, error in
@@ -128,9 +132,9 @@ class GengoServiceTests: XCTestCase {
             
             // the job order in `jobs` may be different from that in `tests`
             for job in jobs {
-                if job.languagePair.source.code == "ja" {
+                if job.languagePair!.source.code == "ja" {
                     XCTAssertEqual(job.unitCount!, 8)
-                } else if job.languagePair.source.code == "en" {
+                } else if job.languagePair!.source.code == "en" {
                     XCTAssertEqual(job.unitCount!, 5)
                 } else {
                     XCTFail("invalid source language")
@@ -159,7 +163,7 @@ class GengoJobsTests: XCTestCase {
     }
 
     func testCreateJobs() {
-        gengo.createJobs(testJobs) {order, error in
+        gengo.createJobs(GengoFixtures().testJobs) {order, error in
             if let e = error {
                 if e.code == GengoErrorCode.NotEnoughCredits.rawValue {
                     self.expectation!.fulfill()
@@ -169,9 +173,9 @@ class GengoJobsTests: XCTestCase {
             }
             
             if let o = order {
-                XCTAssertGreaterThanOrEqual(o.id, 0)
-                XCTAssertGreaterThanOrEqual(o.money!.amount, 0.0 as Float)
-                XCTAssertGreaterThanOrEqual(o.jobCount, 0)
+                XCTAssertGreaterThanOrEqual(o.id!, 0)
+                XCTAssertGreaterThanOrEqual(o.credit!.amount, 0.0 as Float)
+                XCTAssertGreaterThanOrEqual(o.jobCount!, 0)
             } else {
                 if error == nil { // all the jobs are duplicates
                     self.expectation!.fulfill()
@@ -199,7 +203,7 @@ class GengoJobsTests: XCTestCase {
     }
     
     func testGetJobsWithIDs() {
-        gengo.getJobs([1215564]) {jobs, error in
+        gengo.getJobs([1215576]) {jobs, error in
             XCTAssertNil(error)
             
             self.expectation!.fulfill()
@@ -222,8 +226,12 @@ class GengoOrderTests: XCTestCase {
     }
     
     func testGetOrder() {
-        gengo.getOrder(321281) {order, error in
+        gengo.getOrder(321287) {order, error in
             XCTAssertNil(error)
+            XCTAssertGreaterThan(order!.id!, 0)
+            XCTAssertGreaterThan(order!.jobCount!, 0)
+            XCTAssertGreaterThan(order!.units!, 0)
+            XCTAssertGreaterThan(order!.credit!.amount, 0.0 as Float)
             
             self.expectation!.fulfill()
         }
