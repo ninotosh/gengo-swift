@@ -15,7 +15,7 @@ public class Gengo {
 
 // utilities
 extension Gengo {
-    class func toInt(value: AnyObject?, defaultValue: Int = 0) -> Int {
+    class func toInt(value: AnyObject?) -> Int? {
         if let i = value as? Int {
             return i
         } else if let s = value as? String {
@@ -23,7 +23,15 @@ extension Gengo {
                 return i
             }
         }
-        return defaultValue
+        return nil
+    }
+    
+    class func toInt(value: AnyObject?, defaultValue: Int = 0) -> Int {
+        if let i = toInt(value) {
+            return i
+        } else {
+            return defaultValue
+        }
     }
     
     class func toFloat(value: AnyObject?, defaultValue: Float = 0.0) -> Float {
@@ -69,7 +77,7 @@ public class GengoError: NSError {
                 data,
                 options: NSJSONReadingOptions.MutableContainers,
                 error: nil
-                ) as? NSDictionary {
+                ) as? [String: AnyObject] {
                     var isOK = false
                     var code: Int?
                     var message: AnyObject?
@@ -77,7 +85,7 @@ public class GengoError: NSError {
                         if opstat == "ok" {
                             isOK = true
                         } else {
-                            if let err = json["err"] as? NSDictionary {
+                            if let err = json["err"] as? [String: AnyObject] {
                                 code = err["code"] as? Int
                                 message = err["msg"] as? String
                             }
@@ -113,7 +121,7 @@ extension Gengo {
         let request = GengoGet(gengo: self, endpoint: "translate/service/languages")
         request.access() {result, error in
             var languages: [GengoLanguage] = []
-            if let unwrappedResult = result as? NSArray {
+            if let unwrappedResult = result as? [AnyObject] {
                 for language in unwrappedResult {
                     languages.append(GengoLanguage(
                         code: language["lc"] as String,
@@ -136,7 +144,7 @@ extension Gengo {
         let request = GengoGet(gengo: self, endpoint: "translate/service/language_pairs", queries: queries)
         request.access() {result, error in
             var pairs: [GengoLanguagePair] = []
-            if let unwrappedResult = result as? NSArray {
+            if let unwrappedResult = result as? [AnyObject] {
                 for pair in unwrappedResult {
                     pairs.append(GengoLanguagePair(
                         source: GengoLanguage(code: pair["lc_src"] as String),
@@ -191,11 +199,11 @@ extension Gengo {
     // jobs are passed by value
     private func fillJobs(jobs: [GengoJob], result: AnyObject?) -> [GengoJob] {
         var jobArray: [GengoJob] = []
-        if let unwrappedResult = result as? NSDictionary {
-            if let unwrappedJobs = unwrappedResult["jobs"] as? NSDictionary {
+        if let unwrappedResult = result as? [String: AnyObject] {
+            if let unwrappedJobs = unwrappedResult["jobs"] as? [String: AnyObject] {
                 for (key, jobDictionary) in unwrappedJobs {
                     // "job_3" -> ["job", "3"] -> "3" -> 3 -> 2
-                    let i = split(key as String, {$0 == "_"})[1].toInt()! - 1
+                    let i = split(key, {$0 == "_"})[1].toInt()! - 1
                     var job = jobs[i]
                     job.credit = GengoMoney(
                         amount: Gengo.toFloat(jobDictionary["credits"]),
@@ -272,8 +280,7 @@ extension Gengo {
     /// :param: parameters["status"]: GengoJobStatus
     /// :param: parameters["after"]: NSDate or Int
     /// :param: parameters["count"]: Int
-    // TODO change [[String: Int]] to [GengoJob]
-    func getJobs(parameters: [String: Any] = [:], callback: ([[String: Int]], NSError?) -> ()) {
+    func getJobs(parameters: [String: Any] = [:], callback: ([GengoJob], NSError?) -> ()) {
         var q: [String: AnyObject] = [:]
         if let status = parameters["status"] as? GengoJobStatus {
             q["status"] = status.rawValue
@@ -289,10 +296,10 @@ extension Gengo {
         
         let request = GengoGet(gengo: self, endpoint: "translate/jobs", queries: q)
         request.access() {result, error in
-            var jobs: [[String: Int]] = []
-            if let unwrappedJobs = result as? NSArray {
+            var jobs: [GengoJob] = []
+            if let unwrappedJobs = result as? [[String: AnyObject]] {
                 for job in unwrappedJobs {
-                    jobs.append(["ctime": Gengo.toInt(job["ctime"]), "job_id": Gengo.toInt(job["job_id"])])
+                    jobs.append(Gengo.toJob(job))
                 }
             }
             
@@ -310,8 +317,8 @@ extension Gengo {
         let request = GengoGet(gengo: self, endpoint: "translate/jobs/\(joinedIDs)")
         request.access() {result, error in
             var jobs: [GengoJob] = []
-            if let unwrappedResult = result as? NSDictionary {
-                if let unwrappedJobs = unwrappedResult["jobs"] as? NSArray {
+            if let unwrappedResult = result as? [String: AnyObject] {
+                if let unwrappedJobs = unwrappedResult["jobs"] as? [AnyObject] {
                     for job in unwrappedJobs {
                         jobs.append(Gengo.toJob(job as [String: AnyObject]))
                     }
@@ -329,7 +336,7 @@ extension Gengo {
         let request = GengoGet(gengo: self, endpoint: "translate/order/\(id)")
         request.access() {result, error in
             var order: GengoOrder? = nil
-            if let unwrappedResult = result as? NSDictionary {
+            if let unwrappedResult = result as? [String: AnyObject] {
                 if let orderDictionary = unwrappedResult["order"] as? [String: AnyObject] {
                     order = Gengo.toOrder(orderDictionary)
                 }
@@ -340,28 +347,42 @@ extension Gengo {
     }
 }
 
+// JSON to object
 extension Gengo {
     private class func toJob(json: [String: AnyObject]) -> GengoJob {
         var job = GengoJob()
         
-        job.languagePair = GengoLanguagePair(
-            source: GengoLanguage(code: json["lc_src"] as String),
-            target: GengoLanguage(code: json["lc_tgt"] as String),
-            tier: GengoTier(rawValue: json["tier"] as String)!
-        )
+        if let tierString = json["tier"] as? String {
+            if let tier = GengoTier(rawValue: tierString) {
+                job.languagePair = GengoLanguagePair(
+                    source: GengoLanguage(code: json["lc_src"] as String),
+                    target: GengoLanguage(code: json["lc_tgt"] as String),
+                    tier: tier
+                )
+            }
+        }
         job.sourceText = json["body_src"] as? String
         job.autoApprove = GengoBool(value: json["auto_approve"])
-        job.credit = GengoMoney(
-            amount: Gengo.toFloat(json["credits"]),
-            currency: GengoCurrency(rawValue: json["currency"] as String)!
-        )
-        job.eta = Gengo.toInt(json["eta"])
-        job.id = Gengo.toInt(json["job_id"])
+        if let currencyString = json["currency"] as? String {
+            if let currency = GengoCurrency(rawValue: currencyString) {
+                job.credit = GengoMoney(
+                    amount: toFloat(json["credits"]),
+                    currency: currency
+                )
+            }
+        }
+        job.eta = toInt(json["eta"])
+        job.id = toInt(json["job_id"])
         job.order = GengoOrder()
-        job.order!.id = Gengo.toInt(json["order_id"])
+        job.order!.id = toInt(json["order_id"])
         job.slug = json["slug"] as? String
-        job.status = GengoJobStatus(rawValue: json["status"] as String)
-        job.unitCount = Gengo.toInt(json["unit_count"])
+        if let statusString = json["status"] as? String {
+            job.status = GengoJobStatus(rawValue: statusString)
+        }
+        job.unitCount = toInt(json["unit_count"])
+        if let time = toInt(json["ctime"]) {
+            job.createdTime = NSDate(timeIntervalSince1970: Double(time))
+        }
         
         return job
     }
@@ -377,7 +398,11 @@ extension Gengo {
                 )
             }
         }
-        order.jobCount = toInt(json["total_jobs"])
+        if let count = toInt(json["job_count"]) {
+            order.jobCount = count
+        } else if let count = toInt(json["total_jobs"]) {
+            order.jobCount = count
+        }
         order.asGroup = GengoBool(value: json["as_group"])
         order.units = toInt(json["total_units"])
 
@@ -554,6 +579,7 @@ public struct GengoJob: Printable {
     var eta: Int?
     var unitCount: Int?
     var status: GengoJobStatus?
+    var createdTime: NSDate?
     
     init() {}
     

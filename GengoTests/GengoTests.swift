@@ -84,7 +84,7 @@ class GengoServiceTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT*9999, nil)
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
     }
     
     func testGetQuoteText() {
@@ -203,8 +203,9 @@ class GengoJobsTests: XCTestCase {
     }
     
     func testGetJobsWithIDs() {
-        gengo.getJobs([1215576]) {jobs, error in
+        gengo.getJobs([1216010, 1216009]) {jobs, error in
             XCTAssertNil(error)
+            XCTAssertEqual(countElements(jobs), 2)
             
             self.expectation!.fulfill()
         }
@@ -226,12 +227,14 @@ class GengoOrderTests: XCTestCase {
     }
     
     func testGetOrder() {
-        gengo.getOrder(321287) {order, error in
+        gengo.getOrder(321447) {order, error in
             XCTAssertNil(error)
-            XCTAssertGreaterThan(order!.id!, 0)
-            XCTAssertGreaterThan(order!.jobCount!, 0)
-            XCTAssertGreaterThan(order!.units!, 0)
-            XCTAssertGreaterThan(order!.credit!.amount, 0.0 as Float)
+            if let o = order {
+                XCTAssertGreaterThan(o.id!, 0)
+                XCTAssertGreaterThan(o.jobCount!, 0)
+                XCTAssertGreaterThan(o.units!, 0)
+                XCTAssertGreaterThan(o.credit!.amount, 0.0 as Float)
+            }
             
             self.expectation!.fulfill()
         }
