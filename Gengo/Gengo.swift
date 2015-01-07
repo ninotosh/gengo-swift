@@ -330,6 +330,24 @@ extension Gengo {
     }
 }
 
+// Job methods
+extension Gengo {
+    func getJob(id: Int, mt: GengoBool, callback: (GengoJob?, NSError?) -> ()) {
+        let query = ["pre_mt": mt.toInt()]
+        let request = GengoGet(gengo: self, endpoint: "translate/job/\(id)", queries: query)
+        request.access() {result, error in
+            var job: GengoJob?
+            if let unwrappedResult = result as? [String: AnyObject] {
+                if let unwrappedJob = unwrappedResult["job"] as? [String: AnyObject] {
+                    job = Gengo.toJob(unwrappedJob)
+                }
+            }
+            
+            callback(job, error)
+        }
+    }
+}
+
 // Order methods
 extension Gengo {
     func getOrder(id: Int, callback: (GengoOrder?, NSError?) -> ()) {
@@ -500,7 +518,7 @@ public enum GengoJobType: String {
     case File = "file"
 }
 
-public enum GengoBool {
+public enum GengoBool: BooleanType {
     case True, False
     
     init(value: AnyObject?) {
@@ -508,6 +526,10 @@ public enum GengoBool {
         self = (i >= 1) ? .True : .False
     }
     
+    public var boolValue: Bool {
+        return self == .True
+    }
+
     func toInt() -> Int {
         return (self == .True) ? 1 : 0
     }

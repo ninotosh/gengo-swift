@@ -203,13 +203,48 @@ class GengoJobsTests: XCTestCase {
     }
     
     func testGetJobsWithIDs() {
-        gengo.getJobs([1216010, 1216009]) {jobs, error in
+        gengo.getJobs([1217482, 1217483]) {jobs, error in
             XCTAssertNil(error)
             XCTAssertEqual(countElements(jobs), 2)
             
             self.expectation!.fulfill()
         }
         
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+}
+
+class GengoJobTests: XCTestCase {
+    var expectation: XCTestExpectation?
+    
+    override func setUp() {
+        super.setUp()
+        expectation = expectationWithDescription("GengoJobTests")
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+    }
+    
+    func testGetJob() {
+        let jobID = 1217482
+        gengo.getJob(jobID, mt: GengoBool.False) {job, error in
+            XCTAssertNil(error)
+            if let j = job {
+                XCTAssertEqual(j.id!, jobID)
+                
+                if let order = j.order {
+                    XCTAssertGreaterThan(order.id!, 0)
+                } else {
+                    XCTFail("order is nil")
+                }
+            } else {
+                XCTFail("job is nil")
+            }
+            
+            self.expectation!.fulfill()
+        }
+
         waitForExpectationsWithTimeout(TIMEOUT, nil)
     }
 }
