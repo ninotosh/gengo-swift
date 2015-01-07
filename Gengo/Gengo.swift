@@ -345,6 +345,13 @@ extension Gengo {
             callback(order, error)
         }
     }
+
+    func deleteOrder(id: Int, callback: (NSError?) -> ()) {
+        let request = GengoDelete(gengo: self, endpoint: "translate/order/\(id)")
+        request.access() {result, error in
+            callback(error)
+        }
+    }
 }
 
 // JSON to object

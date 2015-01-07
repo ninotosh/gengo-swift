@@ -121,6 +121,18 @@ class GengoGet: GengoRequest {
     }
 }
 
+class GengoDelete: GengoGet {
+    override init(gengo: Gengo, endpoint: String, queries: [String: AnyObject] = [:]) {
+        super.init(gengo: gengo, endpoint: endpoint, queries: queries)
+        
+        self.HTTPMethod = "DELETE"
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class GengoPost: GengoRequest {
     let body: [String: AnyObject]
     

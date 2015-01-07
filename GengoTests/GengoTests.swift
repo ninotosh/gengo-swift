@@ -241,4 +241,14 @@ class GengoOrderTests: XCTestCase {
         
         waitForExpectationsWithTimeout(TIMEOUT, nil)
     }
+    
+    func testDeleteOrder() {
+        gengo.deleteOrder(321747) {error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
 }
