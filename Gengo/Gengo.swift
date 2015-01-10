@@ -43,6 +43,14 @@ extension Gengo {
             return defaultValue
         }
     }
+    
+    class func toDate(value: AnyObject?) -> NSDate? {
+        if let i = toInt(value) {
+            return NSDate(timeIntervalSince1970: Double(i))
+        } else {
+            return nil
+        }
+    }
 }
 
 public enum GengoErrorCode: Int {
@@ -338,12 +346,128 @@ extension Gengo {
         request.access() {result, error in
             var job: GengoJob?
             if let unwrappedResult = result as? [String: AnyObject] {
-                if let unwrappedJob = unwrappedResult["job"] as? [String: AnyObject] {
-                    job = Gengo.toJob(unwrappedJob)
+                if let jobDictionary = unwrappedResult["job"] as? [String: AnyObject] {
+                    job = Gengo.toJob(jobDictionary)
                 }
             }
             
             callback(job, error)
+        }
+    }
+    
+    func putJob(id: Int, action: GengoJobAction, callback: (NSError?) -> ()) {
+        var body: [String: AnyObject] = [:]
+        
+        switch action {
+        case .Revise(let comment):
+            body = ["action": "revise", "comment": comment]
+        case .Approve(let feedback):
+            body = ["action": "approve"]
+            if let rating = feedback.rating {
+                body["rating"] = rating
+            }
+            if let commentForTranslator = feedback.commentForTranslator {
+                body["for_translator"] = commentForTranslator
+            }
+            if let commentForGengo = feedback.commentForGengo {
+                body["for_mygengo"] = commentForGengo
+            }
+            if let isPublic = feedback.isPublic {
+                body["public"] = isPublic.toInt()
+            }
+        case .Reject(let reason, let comment, let captcha, let followUp):
+            body["action"] = "reject"
+            body["reason"] = reason.rawValue
+            body["comment"] = comment
+            body["captcha"] = captcha
+            body["follow_up"] = followUp.rawValue
+        }
+        
+        let request = GengoPut(gengo: self, endpoint: "translate/job/\(id)", body: body)
+        request.access() {result, error in
+            callback(error)
+        }
+    }
+    
+    func deleteJob(id: Int, callback: (NSError?) -> ()) {
+        let request = GengoDelete(gengo: self, endpoint: "translate/job/\(id)")
+        request.access() {result, error in
+            callback(error)
+        }
+    }
+    
+    func getRevisions(jobID: Int, callback: ([GengoRevision], NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "translate/job/\(jobID)/revisions")
+        request.access() {result, error in
+            var revisions: [GengoRevision] = []
+            if let unwrappedResult = result as? [String: AnyObject] {
+                if let revisionsArray = unwrappedResult["revisions"] as? [[String: AnyObject]] {
+                    for revision in revisionsArray {
+                        revisions.append(Gengo.toRevision(revision))
+                    }
+                }
+            }
+            
+            callback(revisions, error)
+        }
+    }
+    
+    func getRevision(jobID: Int, revisionID: Int, callback: (GengoRevision?, NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "translate/job/\(jobID)/revision/\(revisionID)")
+        request.access() {result, error in
+            var revision: GengoRevision?
+            if let unwrappedResult = result as? [String: AnyObject] {
+                if let revisionDictionary = unwrappedResult["revision"] as? [String: AnyObject] {
+                    revision = Gengo.toRevision(revisionDictionary)
+                }
+            }
+            
+            callback(revision, error)
+        }
+    }
+    
+    func getFeedback(jobID: Int, callback: (GengoFeedback?, NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "translate/job/\(jobID)/feedback")
+        request.access() {result, error in
+            var feedback: GengoFeedback?
+            if let unwrappedResult = result as? [String: AnyObject] {
+                if let feedbackDictionary = unwrappedResult["feedback"] as? [String: AnyObject] {
+                    feedback = GengoFeedback()
+                    feedback?.rating = Gengo.toInt(feedbackDictionary["rating"])
+                    feedback?.commentForTranslator = feedbackDictionary["for_translator"] as? String
+                }
+            }
+            
+            callback(feedback, error)
+        }
+    }
+    
+    func getComments(jobID: Int, callback: ([GengoComment], NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "translate/job/\(jobID)/comments")
+        request.access() {result, error in
+            var comments: [GengoComment] = []
+            if let unwrappedResult = result as? [String: AnyObject] {
+                if let commentsArray = unwrappedResult["thread"] as? [[String: AnyObject]] {
+                    for commentDictionary in commentsArray {
+                        var comment = GengoComment()
+                        comment.body = commentDictionary["body"] as? String
+                        comment.author = GengoComment.Author(rawValue: commentDictionary["author"] as String)
+                        comment.createdTime = Gengo.toDate(commentDictionary["ctime"])
+                        
+                        comments.append(comment)
+                    }
+                }
+            }
+
+            callback(comments, error)
+        }
+    }
+    
+    func postComment(jobID: Int, comment: String, callback: (NSError?) -> ()) {
+        let body = ["body": comment]
+        let request = GengoPost(gengo: self, endpoint: "translate/job/\(jobID)/comment", body: body)
+        request.access() {result, error in
+            callback(error)
         }
     }
 }
@@ -405,13 +529,23 @@ extension Gengo {
             job.status = GengoJobStatus(rawValue: statusString)
         }
         job.unitCount = toInt(json["unit_count"])
-        if let time = toInt(json["ctime"]) {
-            job.createdTime = NSDate(timeIntervalSince1970: Double(time))
-        }
+        job.createdTime = toDate(json["ctime"])
         
         return job
     }
 
+    private class func toRevision(json: [String: AnyObject]) -> GengoRevision {
+        var revision = GengoRevision()
+
+        revision.id = Gengo.toInt(json["rev_id"])
+        if let body = json["body_tgt"] as? String {
+            revision.body = body
+        }
+        revision.createdTime = Gengo.toDate(json["ctime"])
+        
+        return revision
+    }
+    
     private class func toOrder(json: [String: AnyObject]) -> GengoOrder {
         var order = GengoOrder()
         order.id = toInt(json["order_id"])
@@ -522,8 +656,11 @@ public enum GengoBool: BooleanType {
     case True, False
     
     init(value: AnyObject?) {
-        let i = Gengo.toInt(value, defaultValue: 0)
-        self = (i >= 1) ? .True : .False
+        if let i = Gengo.toInt(value) {
+            self = (i >= 1) ? .True : .False
+        } else {
+            self = .False
+        }
     }
     
     public var boolValue: Bool {
@@ -615,6 +752,55 @@ public struct GengoJob: Printable {
     public var description: String {
         return "GengoJob(\(languagePair))"
     }
+}
+
+public enum GengoJobAction {
+    case Revise(String)
+    case Approve(GengoFeedback)
+    case Reject(RejectData.Reason, String, String, RejectData.FollowUp)
+    
+    public struct RejectData {
+        public enum Reason: String {
+            case Quality = "quality"
+            case Incomplete = "incomplete"
+            case Other = "other"
+        }
+        
+        public enum FollowUp: String {
+            case Requeue = "requeue"
+            case Cancel = "cancel"
+        }
+    }
+}
+
+public struct GengoRevision {
+    var id: Int?
+    var body: String?
+    var createdTime: NSDate?
+    
+    init() {}
+}
+
+public struct GengoFeedback {
+    var rating: Int?
+    var commentForTranslator: String?
+    var commentForGengo: String?
+    var isPublic: GengoBool?
+
+    init() {}
+}
+
+public struct GengoComment {
+    var body: String?
+    var author: Author?
+    var createdTime: NSDate?
+    
+    public enum Author: String {
+        case Customer = "customer"
+        case Worker = "worker"
+    }
+    
+    init() {}
 }
 
 public struct GengoOrder: Printable {

@@ -227,7 +227,7 @@ class GengoJobTests: XCTestCase {
     }
     
     func testGetJob() {
-        let jobID = 1217482
+        let jobID = 1222384
         gengo.getJob(jobID, mt: GengoBool.False) {job, error in
             XCTAssertNil(error)
             if let j = job {
@@ -245,6 +245,83 @@ class GengoJobTests: XCTestCase {
             self.expectation!.fulfill()
         }
 
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testPutJob() {
+        var feedback = GengoFeedback()
+        feedback.rating = 5
+        feedback.commentForTranslator = "thank you"
+        feedback.commentForGengo = "awesome"
+        gengo.putJob(1222396, action: GengoJobAction.Approve(feedback)) {error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testDeleteJob() {
+        gengo.deleteJob(1222391) {error in
+            XCTAssertNil(error)
+
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testGetRevisions() {
+        gengo.getRevisions(1222391) {revisions, error in
+            XCTAssertNil(error)
+            for revision in revisions {
+                XCTAssertGreaterThan(revision.id!, 0)
+            }
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testGetRevision() {
+        gengo.getRevision(1222106, revisionID: 2569054) {revision, error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testGetFeedback() {
+        gengo.getFeedback(1222396) {feedback, error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testGetComments() {
+        gengo.getComments(1222395) {comments, error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testPostComment() {
+        gengo.postComment(1222395, comment: "どうも") {error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
         waitForExpectationsWithTimeout(TIMEOUT, nil)
     }
 }
@@ -285,5 +362,23 @@ class GengoOrderTests: XCTestCase {
         }
         
         waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+}
+
+class GengoBoolTests: XCTestCase {
+    func test() {
+        XCTAssertEqual(GengoBool(value: true), GengoBool.True)
+        XCTAssertEqual(GengoBool(value: false), GengoBool.False)
+        XCTAssertEqual(GengoBool(value: nil), GengoBool.False)
+        XCTAssertEqual(GengoBool(value: ""), GengoBool.False)
+        XCTAssertEqual(GengoBool(value: "1"), GengoBool.True)
+        XCTAssertEqual(GengoBool(value: "0"), GengoBool.False)
+        XCTAssertEqual(GengoBool(value: 2), GengoBool.True)
+        XCTAssertEqual(GengoBool(value: 1), GengoBool.True)
+        XCTAssertEqual(GengoBool(value: 0), GengoBool.False)
+        XCTAssertEqual(GengoBool(value: -1), GengoBool.False)
+        
+        XCTAssertEqual(GengoBool.True.toInt(), 1)
+        XCTAssertEqual(GengoBool.False.toInt(), 0)
     }
 }
