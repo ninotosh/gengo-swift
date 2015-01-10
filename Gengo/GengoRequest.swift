@@ -201,3 +201,16 @@ class GengoUpload: GengoPost {
         }
     }
 }
+
+class GengoPut: GengoPost {
+    override init(gengo: Gengo, endpoint: String, body: [String : AnyObject]) {
+        super.init(gengo: gengo, endpoint: endpoint, body: body)
+        
+        self.HTTPMethod = "PUT"
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
