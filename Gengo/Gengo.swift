@@ -134,10 +134,20 @@ extension Gengo {
         request.access() {result, error in
             var account = GengoAccount()
             if let accountDictionary = result as? [String: AnyObject] {
-                account.creditSpent = Gengo.toFloat(accountDictionary["credits_spent"])
-                account.currency = GengoCurrency(rawValue: accountDictionary["currency"] as String)
-                account.since = Gengo.toDate(accountDictionary["user_since"])
+                account = Gengo.toAccount(accountDictionary)
             }
+            callback(account, error)
+        }
+    }
+    
+    func getBalance(callback: (GengoAccount, NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "account/balance")
+        request.access() {result, error in
+            var account = GengoAccount()
+            if let accountDictionary = result as? [String: AnyObject] {
+                account = Gengo.toAccount(accountDictionary)
+            }
+            
             callback(account, error)
         }
     }
@@ -587,6 +597,17 @@ extension Gengo {
 
         return order
     }
+    
+    private class func toAccount(json: [String: AnyObject]) -> GengoAccount {
+        var account = GengoAccount()
+        
+        account.creditSpent = Gengo.toFloat(json["credits_spent"])
+        account.creditPresent = Gengo.toFloat(json["credits"])
+        account.currency = GengoCurrency(rawValue: json["currency"] as String)
+        account.since = Gengo.toDate(json["user_since"])
+        
+        return account
+    }
 }
 
 // enums and structs
@@ -840,6 +861,7 @@ public struct GengoOrder: Printable {
 
 public struct GengoAccount {
     var creditSpent: Float?
+    var creditPresent: Float?
     var currency: GengoCurrency?
     var since: NSDate?
     

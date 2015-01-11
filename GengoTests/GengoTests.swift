@@ -56,6 +56,17 @@ class GengoAccountTests: XCTestCase {
         
         waitForExpectationsWithTimeout(TIMEOUT, nil)
     }
+    
+    func testGetBalance() {
+        gengo.getBalance() {account, error in
+            XCTAssertNil(error)
+            XCTAssertGreaterThanOrEqual(account.creditPresent!, 0.0 as Float)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
 }
 
 class GengoServiceTests: XCTestCase {
