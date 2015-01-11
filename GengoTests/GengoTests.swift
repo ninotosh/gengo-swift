@@ -67,6 +67,19 @@ class GengoAccountTests: XCTestCase {
         
         waitForExpectationsWithTimeout(TIMEOUT, nil)
     }
+    
+    func testGetPreferredTranslators() {
+        gengo.getPreferredTranslators() {translators, error in
+            XCTAssertNil(error)
+            for translator in translators {
+                XCTAssertGreaterThan(translator.id!, 0)
+            }
+            
+            self.expectation!.fulfill()
+        }
+
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
 }
 
 class GengoServiceTests: XCTestCase {
@@ -262,12 +275,12 @@ class GengoJobTests: XCTestCase {
     }
     
     func testGetJob() {
-        let jobID = 1222384
+        let jobID = 1222395
         gengo.getJob(jobID, mt: GengoBool.False) {job, error in
             XCTAssertNil(error)
             if let j = job {
                 XCTAssertEqual(j.id!, jobID)
-                
+
                 if let order = j.order {
                     XCTAssertGreaterThan(order.id!, 0)
                 } else {

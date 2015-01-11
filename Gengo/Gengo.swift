@@ -151,6 +151,30 @@ extension Gengo {
             callback(account, error)
         }
     }
+    
+    func getPreferredTranslators(callback: ([GengoTranslator], NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "account/preferred_translators")
+        request.access() {result, error in
+            var translators: [GengoTranslator] = []
+            if let unwrappedResult = result as? [[String: AnyObject]] {
+                for json in unwrappedResult {
+                    let languagePair = Gengo.toLanguagePair(json)
+                    
+                    if let translatorArray = json["translators"] as? [[String: AnyObject]] {
+                        for translatorDictionary in translatorArray {
+                            var translator = GengoTranslator()
+                            translator.id = Gengo.toInt(translatorDictionary["id"])
+                            translator.jobCount = Gengo.toInt(translatorDictionary["number_of_jobs"])
+                            translator.languagePair = languagePair
+                            translators.append(translator)
+                        }
+                    }
+                }
+            }
+            
+            callback(translators, error)
+        }
+    }
 }
 
 // Service methods
@@ -182,17 +206,11 @@ extension Gengo {
         let request = GengoGet(gengo: self, endpoint: "translate/service/language_pairs", queries: queries)
         request.access() {result, error in
             var pairs: [GengoLanguagePair] = []
-            if let unwrappedResult = result as? [AnyObject] {
+            if let unwrappedResult = result as? [[String: AnyObject]] {
                 for pair in unwrappedResult {
-                    pairs.append(GengoLanguagePair(
-                        source: GengoLanguage(code: pair["lc_src"] as String),
-                        target: GengoLanguage(code: pair["lc_tgt"] as String),
-                        tier: GengoTier(rawValue: pair["tier"] as String)!,
-                        price: GengoMoney(
-                            amount: Gengo.toFloat(pair["unit_price"]),
-                            currency: GengoCurrency(rawValue: pair["currency"] as String)!
-                        )
-                    ))
+                    if let p = Gengo.toLanguagePair(pair) {
+                        pairs.append(p)
+                    }
                 }
             }
             callback(pairs, error)
@@ -528,18 +546,33 @@ extension Gengo {
 
 // JSON to object
 extension Gengo {
-    private class func toJob(json: [String: AnyObject]) -> GengoJob {
-        var job = GengoJob()
+    private class func toLanguagePair(json: [String: AnyObject]) -> GengoLanguagePair? {
+        var price: GengoMoney?
+        if let amount = Gengo.toFloat(json["unit_price"]) {
+            if let currency = GengoCurrency(rawValue: json["currency"] as String) {
+                price = GengoMoney(amount: amount, currency: currency)
+            }
+        }
         
+        var languagePair: GengoLanguagePair?
         if let tierString = json["tier"] as? String {
             if let tier = GengoTier(rawValue: tierString) {
-                job.languagePair = GengoLanguagePair(
+                languagePair = GengoLanguagePair(
                     source: GengoLanguage(code: json["lc_src"] as String),
                     target: GengoLanguage(code: json["lc_tgt"] as String),
-                    tier: tier
+                    tier: tier,
+                    price: price
                 )
             }
         }
+        
+        return languagePair
+    }
+    
+    private class func toJob(json: [String: AnyObject]) -> GengoJob {
+        var job = GengoJob()
+        
+        job.languagePair = toLanguagePair(json)
         job.sourceText = json["body_src"] as? String
         job.autoApprove = GengoBool(value: json["auto_approve"])
         if let currencyString = json["currency"] as? String {
@@ -864,6 +897,14 @@ public struct GengoAccount {
     var creditPresent: Float?
     var currency: GengoCurrency?
     var since: NSDate?
+    
+    init() {}
+}
+
+public struct GengoTranslator {
+    var id: Int?
+    var jobCount: Int?
+    var languagePair: GengoLanguagePair?
     
     init() {}
 }
