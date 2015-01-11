@@ -29,27 +29,31 @@ extension Gengo {
     class func toInt(value: AnyObject?, defaultValue: Int = 0) -> Int {
         if let i = toInt(value) {
             return i
-        } else {
-            return defaultValue
         }
+        return defaultValue
     }
     
-    class func toFloat(value: AnyObject?, defaultValue: Float = 0.0) -> Float {
+    class func toFloat(value: AnyObject?) -> Float? {
         if let f = value as? Float {
             return f
         } else if let s = value as? NSString {
             return s.floatValue
-        } else {
-            return defaultValue
         }
+        return nil
+    }
+    
+    class func toFloat(value: AnyObject?, defaultValue: Float = 0.0) -> Float {
+        if let f = toFloat(value) {
+            return f
+        }
+        return defaultValue
     }
     
     class func toDate(value: AnyObject?) -> NSDate? {
         if let i = toInt(value) {
             return NSDate(timeIntervalSince1970: Double(i))
-        } else {
-            return nil
         }
+        return nil
     }
 }
 
@@ -120,6 +124,22 @@ public class GengoError: NSError {
     
     required public init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+// Account methods
+extension Gengo {
+    func getStats(callback: (GengoAccount, NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "account/stats")
+        request.access() {result, error in
+            var account = GengoAccount()
+            if let accountDictionary = result as? [String: AnyObject] {
+                account.creditSpent = Gengo.toFloat(accountDictionary["credits_spent"])
+                account.currency = GengoCurrency(rawValue: accountDictionary["currency"] as String)
+                account.since = Gengo.toDate(accountDictionary["user_since"])
+            }
+            callback(account, error)
+        }
     }
 }
 
@@ -816,4 +836,12 @@ public struct GengoOrder: Printable {
     public var description: String {
         return "GengoOrder#\(id)"
     }
+}
+
+public struct GengoAccount {
+    var creditSpent: Float?
+    var currency: GengoCurrency?
+    var since: NSDate?
+    
+    init() {}
 }

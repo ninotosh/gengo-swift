@@ -34,6 +34,30 @@ class GengoFixtures {
     }
 }
 
+class GengoAccountTests: XCTestCase {
+    var expectation: XCTestExpectation?
+    
+    override func setUp() {
+        super.setUp()
+        expectation = expectationWithDescription("GengoAccountTests")
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+    }
+    
+    func testGetStats() {
+        gengo.getStats() {account, error in
+            XCTAssertNil(error)
+            XCTAssertLessThan(account.since!.timeIntervalSince1970, NSDate().timeIntervalSince1970)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+}
+
 class GengoServiceTests: XCTestCase {
     var expectation: XCTestExpectation?
     
