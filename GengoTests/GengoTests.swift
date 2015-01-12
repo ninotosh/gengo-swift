@@ -82,42 +82,6 @@ class GengoAccountTests: XCTestCase {
     }
 }
 
-class GengoGlossaryTests: XCTestCase {
-    var expectation: XCTestExpectation?
-    
-    override func setUp() {
-        super.setUp()
-        expectation = expectationWithDescription("GengoGlossaryTests")
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-    }
-    
-    func testGetGlossaries() {
-        gengo.getGlossaries() {glossaries, error in
-            XCTAssertNil(error)
-            for glossary in glossaries {
-                XCTAssertGreaterThan(glossary.id!, 0)
-            }
-
-            self.expectation!.fulfill()
-        }
-        
-        waitForExpectationsWithTimeout(TIMEOUT, nil)
-    }
-    
-    func testGetGlossary() {
-        gengo.getGlossary(0) {glossary, error in
-            XCTAssertNil(error)
-            
-            self.expectation!.fulfill()
-        }
-        
-        waitForExpectationsWithTimeout(TIMEOUT, nil)
-    }
-}
-
 class GengoServiceTests: XCTestCase {
     var expectation: XCTestExpectation?
     
@@ -449,6 +413,75 @@ class GengoOrderTests: XCTestCase {
     }
 }
 
+class GengoGlossaryTests: XCTestCase {
+    var expectation: XCTestExpectation?
+    
+    override func setUp() {
+        super.setUp()
+        expectation = expectationWithDescription("GengoGlossaryTests")
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+    }
+    
+    func testGetGlossaries() {
+        gengo.getGlossaries() {glossaries, error in
+            XCTAssertNil(error)
+            for glossary in glossaries {
+                XCTAssertGreaterThan(glossary.id!, 0)
+            }
+
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testGetGlossary() {
+        gengo.getGlossary(0) {glossary, error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+}
+
+class GengoConvertPrimitiveTests: XCTestCase {
+    func testToInt() {
+        XCTAssertEqual(Gengo.toInt(1)!, 1)
+        XCTAssertEqual(Gengo.toInt("1")!, 1)
+        XCTAssertEqual(Gengo.toInt("0")!, 0)
+        XCTAssertEqual(Gengo.toInt(1.8)!, 1)
+
+        XCTAssertNil(Gengo.toInt(""))
+        XCTAssertNil(Gengo.toInt("a"))
+        XCTAssertNil(Gengo.toInt(nil))
+    }
+    
+    func testToFloat() {
+        XCTAssertEqual(Gengo.toFloat(1.8)!, 1.8 as Float)
+        XCTAssertEqual(Gengo.toFloat(1)!, 1 as Float)
+        XCTAssertEqual(Gengo.toFloat("1.8")!, 1.8 as Float)
+        XCTAssertEqual(Gengo.toFloat("1")!, 1 as Float)
+        XCTAssertEqual(Gengo.toFloat("")!, 0.0 as Float)
+        XCTAssertEqual(Gengo.toFloat("a")!, 0.0 as Float)
+
+        XCTAssertNil(Gengo.toFloat(nil))
+    }
+    
+    func testToDate() {
+        XCTAssertEqual(Gengo.toDate("1")!, NSDate(timeIntervalSince1970: 1))
+        XCTAssertEqual(Gengo.toDate(1)!, NSDate(timeIntervalSince1970: 1))
+
+        XCTAssertNil(Gengo.toDate(""))
+        XCTAssertNil(Gengo.toDate("a"))
+        XCTAssertNil(Gengo.toDate(nil))
+    }
+}
+
 class GengoBoolTests: XCTestCase {
     func test() {
         XCTAssertEqual(GengoBool(value: true), GengoBool.True)
@@ -464,5 +497,8 @@ class GengoBoolTests: XCTestCase {
         
         XCTAssertEqual(GengoBool.True.toInt(), 1)
         XCTAssertEqual(GengoBool.False.toInt(), 0)
+        
+        XCTAssertTrue(GengoBool.True)
+        XCTAssertFalse(GengoBool.False)
     }
 }

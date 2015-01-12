@@ -94,10 +94,10 @@ public class GengoRequest: NSMutableURLRequest {
 }
 
 class GengoGet: GengoRequest {
-    let queries: [String: AnyObject]
+    let query: [String: AnyObject]
     
-    init(gengo: Gengo, endpoint: String, queries: [String: AnyObject] = [:]) {
-        self.queries = queries
+    init(gengo: Gengo, endpoint: String, query: [String: AnyObject] = [:]) {
+        self.query = query
         super.init(gengo: gengo, endpoint: endpoint)
     }
     
@@ -111,7 +111,7 @@ class GengoGet: GengoRequest {
     
     override var parameters: [String: String] {
         var p: [String: String] = [:]
-        for (key, value) in queries {
+        for (key, value) in query {
             p[key] = value.description
         }
         for (key, value) in super.parameters {
@@ -122,8 +122,8 @@ class GengoGet: GengoRequest {
 }
 
 class GengoDelete: GengoGet {
-    override init(gengo: Gengo, endpoint: String, queries: [String: AnyObject] = [:]) {
-        super.init(gengo: gengo, endpoint: endpoint, queries: queries)
+    override init(gengo: Gengo, endpoint: String, query: [String: AnyObject] = [:]) {
+        super.init(gengo: gengo, endpoint: endpoint, query: query)
         
         self.HTTPMethod = "DELETE"
     }

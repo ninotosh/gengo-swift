@@ -26,13 +26,6 @@ extension Gengo {
         return nil
     }
     
-    class func toInt(value: AnyObject?, defaultValue: Int = 0) -> Int {
-        if let i = toInt(value) {
-            return i
-        }
-        return defaultValue
-    }
-    
     class func toFloat(value: AnyObject?) -> Float? {
         if let f = value as? Float {
             return f
@@ -40,13 +33,6 @@ extension Gengo {
             return s.floatValue
         }
         return nil
-    }
-    
-    class func toFloat(value: AnyObject?, defaultValue: Float = 0.0) -> Float {
-        if let f = toFloat(value) {
-            return f
-        }
-        return defaultValue
     }
     
     class func toDate(value: AnyObject?) -> NSDate? {
@@ -198,12 +184,12 @@ extension Gengo {
     }
     
     func getLanguagePairs(source: GengoLanguage? = nil, callback: ([GengoLanguagePair], NSError?) -> ()) {
-        var queries: [String: AnyObject] = [:]
+        var query: [String: AnyObject] = [:]
         if let src = source {
-            queries["lc_src"] = src.code
+            query["lc_src"] = src.code
         }
         
-        let request = GengoGet(gengo: self, endpoint: "translate/service/language_pairs", queries: queries)
+        let request = GengoGet(gengo: self, endpoint: "translate/service/language_pairs", query: query)
         request.access() {result, error in
             var pairs: [GengoLanguagePair] = []
             if let unwrappedResult = result as? [[String: AnyObject]] {
@@ -261,10 +247,7 @@ extension Gengo {
                     // "job_3" -> ["job", "3"] -> "3" -> 3 -> 2
                     let i = split(key, {$0 == "_"})[1].toInt()! - 1
                     var job = jobs[i]
-                    job.credit = GengoMoney(
-                        amount: Gengo.toFloat(jobDictionary["credits"]),
-                        currency: GengoCurrency(rawValue: jobDictionary["currency"] as String)!
-                    )
+                    job.credit = Gengo.toMoney(jobDictionary as [String: AnyObject])
                     job.eta = Gengo.toInt(jobDictionary["eta"])
                     job.unitCount = Gengo.toInt(jobDictionary["unit_count"])
                     job.identifier = jobDictionary["identifier"] as? String
@@ -350,7 +333,7 @@ extension Gengo {
             q["count"] = count
         }
         
-        let request = GengoGet(gengo: self, endpoint: "translate/jobs", queries: q)
+        let request = GengoGet(gengo: self, endpoint: "translate/jobs", query: q)
         request.access() {result, error in
             var jobs: [GengoJob] = []
             if let unwrappedJobs = result as? [[String: AnyObject]] {
@@ -390,7 +373,7 @@ extension Gengo {
 extension Gengo {
     func getJob(id: Int, mt: GengoBool, callback: (GengoJob?, NSError?) -> ()) {
         let query = ["pre_mt": mt.toInt()]
-        let request = GengoGet(gengo: self, endpoint: "translate/job/\(id)", queries: query)
+        let request = GengoGet(gengo: self, endpoint: "translate/job/\(id)", query: query)
         request.access() {result, error in
             var job: GengoJob?
             if let unwrappedResult = result as? [String: AnyObject] {
@@ -578,12 +561,7 @@ extension Gengo {
 // JSON to object
 extension Gengo {
     private class func toLanguagePair(json: [String: AnyObject]) -> GengoLanguagePair? {
-        var price: GengoMoney?
-        if let amount = Gengo.toFloat(json["unit_price"]) {
-            if let currency = GengoCurrency(rawValue: json["currency"] as String) {
-                price = GengoMoney(amount: amount, currency: currency)
-            }
-        }
+        var price: GengoMoney? = toMoney(json)
         
         var languagePair: GengoLanguagePair?
         if let tierString = json["tier"] as? String {
@@ -600,20 +578,30 @@ extension Gengo {
         return languagePair
     }
     
+    private class func toMoney(json: [String: AnyObject]) -> GengoMoney? {
+        var money: GengoMoney?
+        
+        if let amount = toFloat(json["credits"]) {
+            if let currencyString = json["currency"] as? String {
+                if let currency = GengoCurrency(rawValue: currencyString) {
+                    money = GengoMoney(
+                        amount: amount,
+                        currency: currency
+                    )
+                }
+            }
+        }
+        
+        return money
+    }
+    
     private class func toJob(json: [String: AnyObject]) -> GengoJob {
         var job = GengoJob()
         
         job.languagePair = toLanguagePair(json)
         job.sourceText = json["body_src"] as? String
         job.autoApprove = GengoBool(value: json["auto_approve"])
-        if let currencyString = json["currency"] as? String {
-            if let currency = GengoCurrency(rawValue: currencyString) {
-                job.credit = GengoMoney(
-                    amount: toFloat(json["credits"]),
-                    currency: currency
-                )
-            }
-        }
+        job.credit = toMoney(json)
         job.eta = toInt(json["eta"])
         job.id = toInt(json["job_id"])
         job.order = GengoOrder()
@@ -643,14 +631,7 @@ extension Gengo {
     private class func toOrder(json: [String: AnyObject]) -> GengoOrder {
         var order = GengoOrder()
         order.id = toInt(json["order_id"])
-        if let currencyString = json["currency"] as? String {
-            if let currency = GengoCurrency(rawValue: currencyString) {
-                order.credit = GengoMoney(
-                    amount: toFloat(json["total_credits"]),
-                    currency: currency
-                )
-            }
-        }
+        order.credit = toMoney(json)
         if let count = toInt(json["job_count"]) {
             order.jobCount = count
         } else if let count = toInt(json["total_jobs"]) {

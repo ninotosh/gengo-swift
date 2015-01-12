@@ -45,6 +45,10 @@ I ordered 2 jobs.
 
 ## Files
 
-- Gengo.swift - public and basic objects such as Gengo, GengoJob and GengoLanguage
-- GengoRequest.swift - internal objects related with HTTP communication
-- Gengo-Bridging-Header.h - one import statement for generation of API signature
+- [Gengo.swift](Gengo/Gengo.swift) - public and basic objects such as Gengo, GengoJob and GengoLanguage
+- [GengoRequest.swift](Gengo/GengoRequest.swift) - internal objects related with HTTP communication
+- [Gengo-Bridging-Header.h](Gengo/Gengo-Bridging-Header.h) - one import statement for generation of API signature
+
+## Dependencies
+
+None.
