@@ -82,6 +82,42 @@ class GengoAccountTests: XCTestCase {
     }
 }
 
+class GengoGlossaryTests: XCTestCase {
+    var expectation: XCTestExpectation?
+    
+    override func setUp() {
+        super.setUp()
+        expectation = expectationWithDescription("GengoGlossaryTests")
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+    }
+    
+    func testGetGlossaries() {
+        gengo.getGlossaries() {glossaries, error in
+            XCTAssertNil(error)
+            for glossary in glossaries {
+                XCTAssertGreaterThan(glossary.id!, 0)
+            }
+
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+    
+    func testGetGlossary() {
+        gengo.getGlossary(0) {glossary, error in
+            XCTAssertNil(error)
+            
+            self.expectation!.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(TIMEOUT, nil)
+    }
+}
+
 class GengoServiceTests: XCTestCase {
     var expectation: XCTestExpectation?
     

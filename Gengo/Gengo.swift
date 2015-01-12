@@ -544,6 +544,37 @@ extension Gengo {
     }
 }
 
+// Glossary methods
+extension Gengo {
+    func getGlossaries(callback: ([GengoGlossary], NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "translate/glossary")
+        request.access() {result, error in
+            var glossaries: [GengoGlossary] = []
+            if let glossaryArray = result as? [[String: AnyObject]] {
+                for glossaryDictionary in glossaryArray {
+                    glossaries.append(Gengo.toGlossary(glossaryDictionary))
+                }
+            }
+            
+            callback(glossaries, error)
+        }
+    }
+    
+    func getGlossary(id: Int, callback: (GengoGlossary?, NSError?) -> ()) {
+        let request = GengoGet(gengo: self, endpoint: "translate/glossary/\(id)")
+        request.access() {result, error in
+            var glossary: GengoGlossary?
+            if let glossaryDictionary = result as? [String: AnyObject] {
+                if (glossaryDictionary["id"] as? Int) != nil {
+                    glossary = Gengo.toGlossary(glossaryDictionary)
+                }
+            }
+
+            callback(glossary, error)
+        }
+    }
+}
+
 // JSON to object
 extension Gengo {
     private class func toLanguagePair(json: [String: AnyObject]) -> GengoLanguagePair? {
@@ -640,6 +671,32 @@ extension Gengo {
         account.since = Gengo.toDate(json["user_since"])
         
         return account
+    }
+    
+    private class func toGlossary(json: [String: AnyObject]) -> GengoGlossary {
+        var glossary = GengoGlossary()
+        
+        glossary.id = Gengo.toInt(json["id"])
+        if let source = json["source_language_code"] as? String {
+            glossary.sourceLanguage = GengoLanguage(code: source)
+        }
+        var targets: [GengoLanguage] = []
+        if let targetArray = json["target_languages"] as? [[AnyObject]] {
+            for target in targetArray {
+                if countElements(target) >= 2 {
+                    targets.append(GengoLanguage(code: target[1] as String))
+                }
+            }
+        }
+        glossary.targetLanguages = targets
+        glossary.isPublic = GengoBool(value: json["is_public"])
+        glossary.unitCount = Gengo.toInt(json["unit_count"])
+        glossary.description = json["description"] as? String
+        glossary.title = json["title"] as? String
+        glossary.status = Gengo.toInt(json["status"])
+        glossary.createdTime = Gengo.toDate(json["ctime"])
+        
+        return glossary
     }
 }
 
@@ -905,6 +962,20 @@ public struct GengoTranslator {
     var id: Int?
     var jobCount: Int?
     var languagePair: GengoLanguagePair?
+    
+    init() {}
+}
+
+public struct GengoGlossary {
+    var id: Int?
+    var sourceLanguage: GengoLanguage?
+    var targetLanguages: [GengoLanguage]?
+    var isPublic: GengoBool?
+    var unitCount: Int?
+    var description: String?
+    var title: String?
+    var status: Int?
+    var createdTime: NSDate?
     
     init() {}
 }
