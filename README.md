@@ -43,6 +43,8 @@ The output will be:
 I ordered 2 jobs.
 ```
 
+The [test code](GengoTests/GengoTests.swift) has a lot more usage examples.
+
 ## Files
 
 - [Gengo.swift](Gengo/Gengo.swift) - public and basic objects such as Gengo, GengoJob and GengoLanguage

@@ -3,8 +3,8 @@ import XCTest
 
 let TIMEOUT: NSTimeInterval = 5
 let gengo = Gengo(
-    publicKey: "EV6nE@gBD8]VB2aX1507)I[^OXmG^PyXIiwncr5nZ68D|Tq25(7XwPF7oZw}BpT5",
-    privateKey: "gaxi4i58IbaLIz@slxAmKeV}PlS@uLd83jG$XiSRBZphUX@Y0$8$7mFH1c3(uxAJ",
+    publicKey: "Your API Key",
+    privateKey: "Your Private Key",
     sandbox: true
 )
 
