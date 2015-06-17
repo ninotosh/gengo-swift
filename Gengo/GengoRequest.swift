@@ -73,12 +73,12 @@ public class GengoRequest: NSMutableURLRequest {
     
     private var apiSignature: String {
         let str = timestamp.cStringUsingEncoding(NSUTF8StringEncoding)
-        let strLen = UInt(timestamp.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        let strLen = timestamp.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         let digestLen = Int(CC_SHA1_DIGEST_LENGTH)
         let result = UnsafeMutablePointer<CUnsignedChar>.alloc(digestLen)
         let objcKey = gengo.privateKey as NSString
         let keyStr = objcKey.cStringUsingEncoding(NSUTF8StringEncoding)
-        let keyLen = UInt(objcKey.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        let keyLen = objcKey.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         
         CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA1), keyStr, keyLen, str!, strLen, result)
         
@@ -151,7 +151,7 @@ class GengoPost: GengoRequest {
     override var parameters: [String: String] {
         var p = super.parameters
         let bodyData = NSJSONSerialization.dataWithJSONObject(body, options: nil, error: nil)
-        p["data"] = NSString(data: bodyData!, encoding: NSUTF8StringEncoding)!
+        p["data"] = NSString(data: bodyData!, encoding: NSUTF8StringEncoding)! as String
         return p
     }
 }
