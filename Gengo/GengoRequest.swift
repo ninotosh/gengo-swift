@@ -16,7 +16,7 @@ public class GengoRequest: NSMutableURLRequest {
         self.setValue("application/json", forHTTPHeaderField: "Accept")
     }
     
-    required public init(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -26,10 +26,8 @@ public class GengoRequest: NSMutableURLRequest {
             let gengoError = GengoError(optionalData: data, optionalResponse: response, optionalError: error)
             
             var result: AnyObject?
-            if let json = NSJSONSerialization.JSONObjectWithData(
-                data,
-                options: NSJSONReadingOptions.MutableContainers,
-                error: nil
+            if let d = data, json = (
+                try? NSJSONSerialization.JSONObjectWithData(d, options: NSJSONReadingOptions.MutableContainers)
                 ) as? NSDictionary {
                     result = json["response"]
             }
@@ -52,7 +50,7 @@ public class GengoRequest: NSMutableURLRequest {
             }
         }
         
-        return "&".join(pairs)
+        return pairs.joinWithSeparator("&")
     }
     
     var parameters: [String: String] {
@@ -82,7 +80,7 @@ public class GengoRequest: NSMutableURLRequest {
         
         CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA1), keyStr, keyLen, str!, strLen, result)
         
-        var hash = NSMutableString()
+        let hash = NSMutableString()
         for i in 0..<digestLen {
             hash.appendFormat("%02x", result[i])
         }
@@ -101,7 +99,7 @@ class GengoGet: GengoRequest {
         super.init(gengo: gengo, endpoint: endpoint)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -128,7 +126,7 @@ class GengoDelete: GengoGet {
         self.HTTPMethod = "DELETE"
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -144,13 +142,13 @@ class GengoPost: GengoRequest {
         self.HTTPBody = queryString.dataUsingEncoding(NSUTF8StringEncoding)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override var parameters: [String: String] {
         var p = super.parameters
-        let bodyData = NSJSONSerialization.dataWithJSONObject(body, options: nil, error: nil)
+        let bodyData = try? NSJSONSerialization.dataWithJSONObject(body, options: [])
         p["data"] = NSString(data: bodyData!, encoding: NSUTF8StringEncoding)! as String
         return p
     }
@@ -164,7 +162,7 @@ class GengoUpload: GengoPost {
         
         self.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
-        var httpBody = NSMutableData()
+        let httpBody = NSMutableData()
         
         for (key, value) in parameters {
             appendLine(httpBody, string: "--\(boundary)")
@@ -186,7 +184,7 @@ class GengoUpload: GengoPost {
         self.HTTPBody = httpBody
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -209,7 +207,7 @@ class GengoPut: GengoPost {
         self.HTTPMethod = "PUT"
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

@@ -97,7 +97,7 @@ class GengoServiceTests: XCTestCase {
     func testGetLanguages() {
         gengo.getLanguages() {languages, error in
             XCTAssertNil(error)
-            XCTAssertGreaterThan(count(languages), 0)
+            XCTAssertGreaterThan(languages.count, 0)
             var english: GengoLanguage?
             for language in languages {
                 if language.code == "en" {
@@ -118,9 +118,9 @@ class GengoServiceTests: XCTestCase {
     }
     
     func testGetLanguagePairs() {
-        gengo.getLanguagePairs(source: GengoLanguage(code: "ja")) {pairs, error in
+        gengo.getLanguagePairs(GengoLanguage(code: "ja")) {pairs, error in
             XCTAssertNil(error)
-            XCTAssertGreaterThan(count(pairs), 0)
+            XCTAssertGreaterThan(pairs.count, 0)
             var nonJaCount = 0
             for pair in pairs {
                 if pair.source.code != "ja" {
@@ -138,7 +138,7 @@ class GengoServiceTests: XCTestCase {
     func testGetQuoteText() {
         gengo.getQuoteText(GengoFixtures().testJobs) {jobs, error in
             XCTAssertNil(error)
-            XCTAssertGreaterThan(count(jobs), 0)
+            XCTAssertGreaterThan(jobs.count, 0)
             
             // the job order in `jobs` may be different from that in `tests`
             for job in jobs {
@@ -160,7 +160,7 @@ class GengoServiceTests: XCTestCase {
     
     func testGetQuoteFile() {
         var fileJobs: [GengoJob] = []
-        for (i, job) in enumerate(GengoFixtures().testJobs) {
+        for (i, job) in GengoFixtures().testJobs.enumerate() {
             var fileJob = GengoJob()
             fileJob.languagePair = job.languagePair
             fileJob.sourceFile = GengoFile(
@@ -176,7 +176,7 @@ class GengoServiceTests: XCTestCase {
         
         gengo.getQuoteFile(fileJobs) {jobs, error in
             XCTAssertNil(error)
-            XCTAssertGreaterThan(count(jobs), 0)
+            XCTAssertGreaterThan(jobs.count, 0)
             
             // the job order in `jobs` may be different from that in `tests`
             for job in jobs {
@@ -239,10 +239,10 @@ class GengoJobsTests: XCTestCase {
     }
     
     func testGetJobsWithParameters() {
-        var parameters: [String: Any] = ["count": 1]
-        gengo.getJobs(parameters: parameters) {jobs, error in
+        let parameters: [String: Any] = ["count": 1]
+        gengo.getJobs(parameters) {jobs, error in
             XCTAssertNil(error)
-            XCTAssertEqual(count(jobs), 1)
+            XCTAssertEqual(jobs.count, 1)
             
             self.expectation!.fulfill()
         }
@@ -253,7 +253,7 @@ class GengoJobsTests: XCTestCase {
     func testGetJobsWithIDs() {
         gengo.getJobs([1217482, 1217483]) {jobs, error in
             XCTAssertNil(error)
-            XCTAssertEqual(count(jobs), 2)
+            XCTAssertEqual(jobs.count, 2)
             
             self.expectation!.fulfill()
         }
