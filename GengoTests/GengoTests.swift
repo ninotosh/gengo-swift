@@ -124,7 +124,7 @@ class GengoServiceTests: XCTestCase {
             var nonJaCount = 0
             for pair in pairs {
                 if pair.source.code != "ja" {
-                    ++nonJaCount
+                    nonJaCount += 1
                 }
             }
             XCTAssertEqual(nonJaCount, 0)
