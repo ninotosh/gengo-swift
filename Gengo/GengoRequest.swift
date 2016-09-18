@@ -10,7 +10,7 @@ public class GengoRequest: NSMutableURLRequest {
         self.gengo = gengo
         self.endpoint = endpoint
         super.init(URL: NSURL(string: "")!, cachePolicy: NSURLRequestCachePolicy.UseProtocolCachePolicy, timeoutInterval: 60)
-        self.URL = NSURL(string: url)
+        self.URL = NSURL(string: apiURL)
         
         self.HTTPMethod = "GET"
         self.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -38,7 +38,7 @@ public class GengoRequest: NSMutableURLRequest {
         dataTask.resume()
     }
     
-    var url: String {
+    var apiURL: String {
         return gengo.apiHost + endpoint
     }
     
@@ -103,8 +103,8 @@ class GengoGet: GengoRequest {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override var url: String {
-        return super.url + "?" + queryString
+    override var apiURL: String {
+        return super.apiURL + "?" + queryString
     }
     
     override var parameters: [String: String] {
