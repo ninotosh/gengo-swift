@@ -1,18 +1,18 @@
 import Foundation
 
-public class GengoRequest: NSMutableURLRequest {
+open class GengoRequest: NSMutableURLRequest {
     let gengo: Gengo
     let endpoint: String
     
-    let now: NSDate = NSDate()
+    let now: Date = Date()
     
     init(gengo: Gengo, endpoint: String) {
         self.gengo = gengo
         self.endpoint = endpoint
-        super.init(URL: NSURL(string: "")!, cachePolicy: NSURLRequestCachePolicy.UseProtocolCachePolicy, timeoutInterval: 60)
-        self.URL = NSURL(string: apiURL)
+        super.init(url: URL(string: "")!, cachePolicy: NSURLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: 60)
+        self.url = URL(string: apiURL)
         
-        self.HTTPMethod = "GET"
+        self.httpMethod = "GET"
         self.setValue("application/json", forHTTPHeaderField: "Accept")
     }
     
@@ -20,14 +20,14 @@ public class GengoRequest: NSMutableURLRequest {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func access(callback: (AnyObject?, NSError?) -> ()) {
-        let session = NSURLSession.sharedSession()
-        let dataTask = session.dataTaskWithRequest(self, completionHandler: {data, response, error in
+    open func access(_ callback: @escaping (AnyObject?, NSError?) -> ()) {
+        let session = URLSession.shared
+        let dataTask = session.dataTask(with: self, completionHandler: {data, response, error in
             let gengoError = GengoError(optionalData: data, optionalResponse: response, optionalError: error)
             
             var result: AnyObject?
-            if let d = data, json = (
-                try? NSJSONSerialization.JSONObjectWithData(d, options: NSJSONReadingOptions.MutableContainers)
+            if let d = data, let json = (
+                try? JSONSerialization.jsonObject(with: d, options: JSONSerialization.ReadingOptions.mutableContainers)
                 ) as? NSDictionary {
                     result = json["response"]
             }
@@ -45,12 +45,12 @@ public class GengoRequest: NSMutableURLRequest {
     var queryString: String {
         var pairs: [String] = []
         for (key, value) in parameters {
-            if let v = value.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet(charactersInString: "")) {
+            if let v = value.addingPercentEncoding(withAllowedCharacters: CharacterSet(charactersIn: "")) {
                 pairs.append("\(key)=\(v)")
             }
         }
         
-        return pairs.joinWithSeparator("&")
+        return pairs.joined(separator: "&")
     }
     
     var parameters: [String: String] {
@@ -61,22 +61,22 @@ public class GengoRequest: NSMutableURLRequest {
         return p
     }
     
-    private var apiKey: String {
+    fileprivate var apiKey: String {
         return gengo.publicKey
     }
     
-    private var timestamp: String {
+    fileprivate var timestamp: String {
         return String(Int(now.timeIntervalSince1970))
     }
     
-    private var apiSignature: String {
-        let str = timestamp.cStringUsingEncoding(NSUTF8StringEncoding)
-        let strLen = timestamp.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+    fileprivate var apiSignature: String {
+        let str = timestamp.cString(using: String.Encoding.utf8)
+        let strLen = timestamp.lengthOfBytes(using: String.Encoding.utf8)
         let digestLen = Int(CC_SHA1_DIGEST_LENGTH)
-        let result = UnsafeMutablePointer<CUnsignedChar>.alloc(digestLen)
+        let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLen)
         let objcKey = gengo.privateKey as NSString
-        let keyStr = objcKey.cStringUsingEncoding(NSUTF8StringEncoding)
-        let keyLen = objcKey.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+        let keyStr = objcKey.cString(using: String.Encoding.utf8.rawValue)
+        let keyLen = objcKey.lengthOfBytes(using: String.Encoding.utf8.rawValue)
         
         CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA1), keyStr, keyLen, str!, strLen, result)
         
@@ -85,7 +85,7 @@ public class GengoRequest: NSMutableURLRequest {
             hash.appendFormat("%02x", result[i])
         }
         
-        result.destroy()
+        result.deinitialize()
         
         return String(hash)
     }
@@ -123,7 +123,7 @@ class GengoDelete: GengoGet {
     override init(gengo: Gengo, endpoint: String, query: [String: AnyObject] = [:]) {
         super.init(gengo: gengo, endpoint: endpoint, query: query)
         
-        self.HTTPMethod = "DELETE"
+        self.httpMethod = "DELETE"
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -138,8 +138,8 @@ class GengoPost: GengoRequest {
         self.body = body
         super.init(gengo: gengo, endpoint: endpoint)
         
-        self.HTTPMethod = "POST"
-        self.HTTPBody = queryString.dataUsingEncoding(NSUTF8StringEncoding)
+        self.httpMethod = "POST"
+        self.httpBody = queryString.data(using: String.Encoding.utf8)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -148,8 +148,8 @@ class GengoPost: GengoRequest {
     
     override var parameters: [String: String] {
         var p = super.parameters
-        let bodyData = try? NSJSONSerialization.dataWithJSONObject(body, options: [])
-        p["data"] = NSString(data: bodyData!, encoding: NSUTF8StringEncoding)! as String
+        let bodyData = try? JSONSerialization.data(withJSONObject: body, options: [])
+        p["data"] = NSString(data: bodyData!, encoding: String.Encoding.utf8.rawValue)! as String
         return p
     }
 }
@@ -176,26 +176,26 @@ class GengoUpload: GengoPost {
             appendLine(httpBody, string: "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(file.name)\"")
             appendLine(httpBody, string: "Content-Type: \(file.mimeType)")
             appendLine(httpBody, string: "")
-            httpBody.appendData(file.data)
+            httpBody.append(file.data as Data)
             appendLine(httpBody, string: "")
         }
         appendLine(httpBody, string: "--\(boundary)--")
         
-        self.HTTPBody = httpBody
+        self.httpBody = httpBody as Data
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private var boundary: String {
+    fileprivate var boundary: String {
         return "GengoSwiftBoundary\(timestamp)"
     }
     
-    private func appendLine(data: NSMutableData, string: String = "") {
+    fileprivate func appendLine(_ data: NSMutableData, string: String = "") {
         let s = string + "\r\n"
-        if let d = s.dataUsingEncoding(NSUTF8StringEncoding) {
-            data.appendData(d)
+        if let d = s.data(using: String.Encoding.utf8) {
+            data.append(d)
         }
     }
 }
@@ -204,7 +204,7 @@ class GengoPut: GengoPost {
     override init(gengo: Gengo, endpoint: String, body: [String : AnyObject]) {
         super.init(gengo: gengo, endpoint: endpoint, body: body)
         
-        self.HTTPMethod = "PUT"
+        self.httpMethod = "PUT"
     }
     
     required init?(coder aDecoder: NSCoder) {
