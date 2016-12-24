@@ -76,14 +76,14 @@ open class GengoError: NSError {
                 options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: AnyObject] {
                     var isOK = false
                     var code: Int?
-                    var message: AnyObject?
+                    var message: String?
                     if let opstat = json["opstat"] as? String {
                         if opstat == "ok" {
                             isOK = true
                         } else {
                             if let err = json["err"] as? [String: AnyObject] {
                                 code = err["code"] as? Int
-                                message = err["msg"] as? String as AnyObject?
+                                message = err["msg"] as? String
                             }
                         }
                     }
