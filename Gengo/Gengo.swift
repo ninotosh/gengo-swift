@@ -113,7 +113,7 @@ open class GengoError: NSError {
 
 // Account methods
 extension Gengo {
-    func getStats(_ callback: (GengoAccount, NSError?) -> ()) {
+    func getStats(_ callback: @escaping (GengoAccount, NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "account/stats")
         request.access() {result, error in
             var account = GengoAccount()
@@ -124,7 +124,7 @@ extension Gengo {
         }
     }
     
-    func getBalance(_ callback: (GengoAccount, NSError?) -> ()) {
+    func getBalance(_ callback: @escaping (GengoAccount, NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "account/balance")
         request.access() {result, error in
             var account = GengoAccount()
@@ -136,7 +136,7 @@ extension Gengo {
         }
     }
     
-    func getPreferredTranslators(_ callback: ([GengoTranslator], NSError?) -> ()) {
+    func getPreferredTranslators(_ callback: @escaping ([GengoTranslator], NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "account/preferred_translators")
         request.access() {result, error in
             var translators: [GengoTranslator] = []
@@ -163,7 +163,7 @@ extension Gengo {
 
 // Service methods
 extension Gengo {
-    func getLanguages(_ callback: ([GengoLanguage], NSError?) -> ()) {
+    func getLanguages(_ callback: @escaping ([GengoLanguage], NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "translate/service/languages")
         request.access() {result, error in
             var languages: [GengoLanguage] = []
@@ -183,7 +183,7 @@ extension Gengo {
         }
     }
     
-    func getLanguagePairs(_ source: GengoLanguage? = nil, callback: ([GengoLanguagePair], NSError?) -> ()) {
+    func getLanguagePairs(_ source: GengoLanguage? = nil, callback: @escaping ([GengoLanguagePair], NSError?) -> ()) {
         var query: [String: AnyObject] = [:]
         if let src = source {
             query["lc_src"] = src.code as AnyObject?
@@ -333,7 +333,7 @@ extension Gengo {
     /// - parameter parameters["status"]:: GengoJobStatus
     /// - parameter parameters["after"]:: NSDate or Int
     /// - parameter parameters["count"]:: Int
-    func getJobs(_ parameters: [String: Any] = [:], callback: ([GengoJob], NSError?) -> ()) {
+    func getJobs(_ parameters: [String: Any] = [:], callback: @escaping ([GengoJob], NSError?) -> ()) {
         var q: [String: AnyObject] = [:]
         if let status = parameters["status"] as? GengoJobStatus {
             q["status"] = status.rawValue as AnyObject?
@@ -360,7 +360,7 @@ extension Gengo {
         }
     }
     
-    func getJobs(_ ids: [Int], callback: ([GengoJob], NSError?) -> ()) {
+    func getJobs(_ ids: [Int], callback: @escaping ([GengoJob], NSError?) -> ()) {
         var stringIDs: [String] = []
         for id in ids {
             stringIDs.append(String(id))
@@ -400,7 +400,7 @@ extension Gengo {
         }
     }
     
-    func putJob(_ id: Int, action: GengoJobAction, callback: (NSError?) -> ()) {
+    func putJob(_ id: Int, action: GengoJobAction, callback: @escaping (NSError?) -> ()) {
         var body: [String: AnyObject] = [:]
         
         switch action {
@@ -434,14 +434,14 @@ extension Gengo {
         }
     }
     
-    func deleteJob(_ id: Int, callback: (NSError?) -> ()) {
+    func deleteJob(_ id: Int, callback: @escaping (NSError?) -> ()) {
         let request = GengoDelete(gengo: self, endpoint: "translate/job/\(id)")
         request.access() {result, error in
             callback(error)
         }
     }
     
-    func getRevisions(_ jobID: Int, callback: ([GengoRevision], NSError?) -> ()) {
+    func getRevisions(_ jobID: Int, callback: @escaping ([GengoRevision], NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "translate/job/\(jobID)/revisions")
         request.access() {result, error in
             var revisions: [GengoRevision] = []
@@ -457,7 +457,7 @@ extension Gengo {
         }
     }
     
-    func getRevision(_ jobID: Int, revisionID: Int, callback: (GengoRevision?, NSError?) -> ()) {
+    func getRevision(_ jobID: Int, revisionID: Int, callback: @escaping (GengoRevision?, NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "translate/job/\(jobID)/revision/\(revisionID)")
         request.access() {result, error in
             var revision: GengoRevision?
@@ -471,7 +471,7 @@ extension Gengo {
         }
     }
     
-    func getFeedback(_ jobID: Int, callback: (GengoFeedback?, NSError?) -> ()) {
+    func getFeedback(_ jobID: Int, callback: @escaping (GengoFeedback?, NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "translate/job/\(jobID)/feedback")
         request.access() {result, error in
             var feedback: GengoFeedback?
@@ -487,7 +487,7 @@ extension Gengo {
         }
     }
     
-    func getComments(_ jobID: Int, callback: ([GengoComment], NSError?) -> ()) {
+    func getComments(_ jobID: Int, callback: @escaping ([GengoComment], NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "translate/job/\(jobID)/comments")
         request.access() {result, error in
             var comments: [GengoComment] = []
@@ -521,7 +521,7 @@ extension Gengo {
 
 // Order methods
 extension Gengo {
-    func getOrder(_ id: Int, callback: (GengoOrder?, NSError?) -> ()) {
+    func getOrder(_ id: Int, callback: @escaping (GengoOrder?, NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "translate/order/\(id)")
         request.access() {result, error in
             var order: GengoOrder? = nil
@@ -535,7 +535,7 @@ extension Gengo {
         }
     }
 
-    func deleteOrder(_ id: Int, callback: (NSError?) -> ()) {
+    func deleteOrder(_ id: Int, callback: @escaping (NSError?) -> ()) {
         let request = GengoDelete(gengo: self, endpoint: "translate/order/\(id)")
         request.access() {result, error in
             callback(error)
@@ -545,7 +545,7 @@ extension Gengo {
 
 // Glossary methods
 extension Gengo {
-    func getGlossaries(_ callback: ([GengoGlossary], NSError?) -> ()) {
+    func getGlossaries(_ callback: @escaping ([GengoGlossary], NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "translate/glossary")
         request.access() {result, error in
             var glossaries: [GengoGlossary] = []
@@ -559,7 +559,7 @@ extension Gengo {
         }
     }
     
-    func getGlossary(_ id: Int, callback: (GengoGlossary?, NSError?) -> ()) {
+    func getGlossary(_ id: Int, callback: @escaping (GengoGlossary?, NSError?) -> ()) {
         let request = GengoGet(gengo: self, endpoint: "translate/glossary/\(id)")
         request.access() {result, error in
             var glossary: GengoGlossary?
