@@ -22,14 +22,14 @@ open class GengoRequest: NSMutableURLRequest {
     
     open func access(_ callback: @escaping (AnyObject?, NSError?) -> ()) {
         let session = URLSession.shared
-        let dataTask = session.dataTask(with: self, completionHandler: {data, response, error in
-            let gengoError = GengoError(optionalData: data, optionalResponse: response, optionalError: error)
+        let dataTask = session.dataTask(with: self as URLRequest, completionHandler: {data, response, error in
+            let gengoError = GengoError(optionalData: data, optionalResponse: response, optionalError: error as NSError?)
             
             var result: AnyObject?
             if let d = data, let json = (
                 try? JSONSerialization.jsonObject(with: d, options: JSONSerialization.ReadingOptions.mutableContainers)
-                ) as? NSDictionary {
-                    result = json["response"]
+                ) as? [String: AnyObject] {
+                result = json["response"]
             }
             
             callback(result, gengoError)
