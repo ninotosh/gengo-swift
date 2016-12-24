@@ -230,11 +230,11 @@ extension Gengo {
             ]
             if (job.type == GengoJobType.File) {
                 let file_key = "file_\(index + 1)"
-                jobsDictionary[job_key]?.updateValue(file_key as AnyObject, forKey: "file_key")
+                _ = jobsDictionary[job_key]?.updateValue(file_key as AnyObject, forKey: "file_key")
                 files[file_key] = job.sourceFile
             } else {
                 if let sourceText = job.sourceText {
-                    jobsDictionary[job_key]?.updateValue(sourceText as AnyObject, forKey: "body_src")
+                    _ = jobsDictionary[job_key]?.updateValue(sourceText as AnyObject, forKey: "body_src")
                 }
             }
         }
