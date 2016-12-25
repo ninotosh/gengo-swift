@@ -1,7 +1,7 @@
 import UIKit
 import XCTest
 
-let TIMEOUT: NSTimeInterval = 5
+let TIMEOUT: TimeInterval = 5
 let gengo = Gengo(
     publicKey: "Your API Key",
     privateKey: "Your Private Key",
@@ -39,7 +39,7 @@ class GengoAccountTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = expectationWithDescription("GengoAccountTests")
+        expectation = self.expectation(description: "GengoAccountTests")
     }
     
     override func tearDown() {
@@ -49,12 +49,12 @@ class GengoAccountTests: XCTestCase {
     func testGetStats() {
         gengo.getStats() {account, error in
             XCTAssertNil(error)
-            XCTAssertLessThan(account.since!.timeIntervalSince1970, NSDate().timeIntervalSince1970)
+            XCTAssertLessThan(account.since!.timeIntervalSince1970, Date().timeIntervalSince1970)
             
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetBalance() {
@@ -65,7 +65,7 @@ class GengoAccountTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetPreferredTranslators() {
@@ -78,7 +78,7 @@ class GengoAccountTests: XCTestCase {
             self.expectation!.fulfill()
         }
 
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
 }
 
@@ -87,7 +87,7 @@ class GengoServiceTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = expectationWithDescription("GengoServiceTests")
+        expectation = self.expectation(description: "GengoServiceTests")
     }
     
     override func tearDown() {
@@ -114,7 +114,7 @@ class GengoServiceTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetLanguagePairs() {
@@ -132,7 +132,7 @@ class GengoServiceTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetQuoteText() {
@@ -155,16 +155,16 @@ class GengoServiceTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetQuoteFile() {
         var fileJobs: [GengoJob] = []
-        for (i, job) in GengoFixtures().testJobs.enumerate() {
+        for (i, job) in GengoFixtures().testJobs.enumerated() {
             var fileJob = GengoJob()
             fileJob.languagePair = job.languagePair
             fileJob.sourceFile = GengoFile(
-                data: job.sourceText!.dataUsingEncoding(NSUTF8StringEncoding)!,
+                data: job.sourceText!.data(using: String.Encoding.utf8)!,
                 name: "\(i).txt"
             )
             fileJobs.append(fileJob)
@@ -194,7 +194,7 @@ class GengoServiceTests: XCTestCase {
             self.expectation!.fulfill()
         }
 
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
 }
 
@@ -203,7 +203,7 @@ class GengoJobsTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = expectationWithDescription("GengoJobsTests")
+        expectation = self.expectation(description: "GengoJobsTests")
     }
     
     override func tearDown() {
@@ -213,7 +213,7 @@ class GengoJobsTests: XCTestCase {
     func testCreateJobs() {
         gengo.createJobs(GengoFixtures().testJobs) {order, error in
             if let e = error {
-                if e.code == GengoErrorCode.NotEnoughCredits.rawValue {
+                if e.code == GengoErrorCode.notEnoughCredits.rawValue {
                     self.expectation!.fulfill()
                     return
                 }
@@ -235,7 +235,7 @@ class GengoJobsTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetJobsWithParameters() {
@@ -247,7 +247,7 @@ class GengoJobsTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetJobsWithIDs() {
@@ -258,7 +258,7 @@ class GengoJobsTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
 }
 
@@ -267,7 +267,7 @@ class GengoJobTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = expectationWithDescription("GengoJobTests")
+        expectation = self.expectation(description: "GengoJobTests")
     }
     
     override func tearDown() {
@@ -276,7 +276,7 @@ class GengoJobTests: XCTestCase {
     
     func testGetJob() {
         let jobID = 1222395
-        gengo.getJob(jobID, mt: GengoBool.False) {job, error in
+        gengo.getJob(jobID, mt: GengoBool.false) {job, error in
             XCTAssertNil(error)
             if let j = job {
                 XCTAssertEqual(j.id!, jobID)
@@ -293,7 +293,7 @@ class GengoJobTests: XCTestCase {
             self.expectation!.fulfill()
         }
 
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testPutJob() {
@@ -301,13 +301,13 @@ class GengoJobTests: XCTestCase {
         feedback.rating = 5
         feedback.commentForTranslator = "thank you"
         feedback.commentForGengo = "awesome"
-        gengo.putJob(1222396, action: GengoJobAction.Approve(feedback)) {error in
+        gengo.putJob(1222396, action: GengoJobAction.approve(feedback)) {error in
             XCTAssertNil(error)
             
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testDeleteJob() {
@@ -317,7 +317,7 @@ class GengoJobTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetRevisions() {
@@ -330,7 +330,7 @@ class GengoJobTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetRevision() {
@@ -340,7 +340,7 @@ class GengoJobTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetFeedback() {
@@ -350,7 +350,7 @@ class GengoJobTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetComments() {
@@ -360,7 +360,7 @@ class GengoJobTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testPostComment() {
@@ -370,7 +370,7 @@ class GengoJobTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
 }
 
@@ -379,7 +379,7 @@ class GengoOrderTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = expectationWithDescription("GengoOrderTests")
+        expectation = self.expectation(description: "GengoOrderTests")
     }
     
     override func tearDown() {
@@ -399,7 +399,7 @@ class GengoOrderTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testDeleteOrder() {
@@ -409,7 +409,7 @@ class GengoOrderTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
 }
 
@@ -418,7 +418,7 @@ class GengoGlossaryTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = expectationWithDescription("GengoGlossaryTests")
+        expectation = self.expectation(description: "GengoGlossaryTests")
     }
     
     override func tearDown() {
@@ -435,7 +435,7 @@ class GengoGlossaryTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testGetGlossary() {
@@ -445,7 +445,7 @@ class GengoGlossaryTests: XCTestCase {
             self.expectation!.fulfill()
         }
         
-        waitForExpectationsWithTimeout(TIMEOUT, handler: nil)
+        waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
 }
 
@@ -473,8 +473,8 @@ class GengoConvertPrimitiveTests: XCTestCase {
     }
     
     func testToDate() {
-        XCTAssertEqual(Gengo.toDate("1")!, NSDate(timeIntervalSince1970: 1))
-        XCTAssertEqual(Gengo.toDate(1)!, NSDate(timeIntervalSince1970: 1))
+        XCTAssertEqual(Gengo.toDate("1")!, Date(timeIntervalSince1970: 1))
+        XCTAssertEqual(Gengo.toDate(1)!, Date(timeIntervalSince1970: 1))
 
         XCTAssertNil(Gengo.toDate(""))
         XCTAssertNil(Gengo.toDate("a"))
@@ -484,21 +484,21 @@ class GengoConvertPrimitiveTests: XCTestCase {
 
 class GengoBoolTests: XCTestCase {
     func test() {
-        XCTAssertEqual(GengoBool(value: true), GengoBool.True)
-        XCTAssertEqual(GengoBool(value: false), GengoBool.False)
-        XCTAssertEqual(GengoBool(value: nil), GengoBool.False)
-        XCTAssertEqual(GengoBool(value: ""), GengoBool.False)
-        XCTAssertEqual(GengoBool(value: "1"), GengoBool.True)
-        XCTAssertEqual(GengoBool(value: "0"), GengoBool.False)
-        XCTAssertEqual(GengoBool(value: 2), GengoBool.True)
-        XCTAssertEqual(GengoBool(value: 1), GengoBool.True)
-        XCTAssertEqual(GengoBool(value: 0), GengoBool.False)
-        XCTAssertEqual(GengoBool(value: -1), GengoBool.False)
+        XCTAssertEqual(GengoBool(value: true as AnyObject?), GengoBool.true)
+        XCTAssertEqual(GengoBool(value: false as AnyObject?), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: nil), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: "" as AnyObject?), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: "1" as AnyObject?), GengoBool.true)
+        XCTAssertEqual(GengoBool(value: "0" as AnyObject?), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: 2 as AnyObject?), GengoBool.true)
+        XCTAssertEqual(GengoBool(value: 1 as AnyObject?), GengoBool.true)
+        XCTAssertEqual(GengoBool(value: 0 as AnyObject?), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: -1 as AnyObject?), GengoBool.false)
         
-        XCTAssertEqual(GengoBool.True.toInt(), 1)
-        XCTAssertEqual(GengoBool.False.toInt(), 0)
+        XCTAssertEqual(GengoBool.true.toInt(), 1)
+        XCTAssertEqual(GengoBool.false.toInt(), 0)
         
-        XCTAssertTrue(GengoBool.True)
-        XCTAssertFalse(GengoBool.False)
+        XCTAssertTrue(GengoBool.true.boolValue)
+        XCTAssertFalse(GengoBool.false.boolValue)
     }
 }
