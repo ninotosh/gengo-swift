@@ -15,7 +15,7 @@ open class Gengo {
 
 // utilities
 extension Gengo {
-    class func toInt(_ value: AnyObject?) -> Int? {
+    class func toInt(_ value: Any?) -> Int? {
         if let i = value as? Int {
             return i
         } else if let s = value as? String {
@@ -26,7 +26,7 @@ extension Gengo {
         return nil
     }
     
-    class func toFloat(_ value: AnyObject?) -> Float? {
+    class func toFloat(_ value: Any?) -> Float? {
         if let f = value as? Float {
             return f
         } else if let s = value as? NSString {
@@ -35,7 +35,7 @@ extension Gengo {
         return nil
     }
     
-    class func toDate(_ value: AnyObject?) -> Date? {
+    class func toDate(_ value: Any?) -> Date? {
         if let i = toInt(value) {
             return Date(timeIntervalSince1970: Double(i))
         }
