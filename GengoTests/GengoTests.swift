@@ -39,7 +39,7 @@ class GengoAccountTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = self.expectation(withDescription: "GengoAccountTests")
+        expectation = self.expectation(description: "GengoAccountTests")
     }
     
     override func tearDown() {
@@ -87,7 +87,7 @@ class GengoServiceTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = self.expectation(withDescription: "GengoServiceTests")
+        expectation = self.expectation(description: "GengoServiceTests")
     }
     
     override func tearDown() {
@@ -203,7 +203,7 @@ class GengoJobsTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = self.expectation(withDescription: "GengoJobsTests")
+        expectation = self.expectation(description: "GengoJobsTests")
     }
     
     override func tearDown() {
@@ -267,7 +267,7 @@ class GengoJobTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = self.expectation(withDescription: "GengoJobTests")
+        expectation = self.expectation(description: "GengoJobTests")
     }
     
     override func tearDown() {
@@ -379,7 +379,7 @@ class GengoOrderTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = self.expectation(withDescription: "GengoOrderTests")
+        expectation = self.expectation(description: "GengoOrderTests")
     }
     
     override func tearDown() {
@@ -418,7 +418,7 @@ class GengoGlossaryTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        expectation = self.expectation(withDescription: "GengoGlossaryTests")
+        expectation = self.expectation(description: "GengoGlossaryTests")
     }
     
     override func tearDown() {
