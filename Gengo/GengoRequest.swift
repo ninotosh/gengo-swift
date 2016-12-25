@@ -9,7 +9,9 @@ open class GengoRequest: NSMutableURLRequest {
     init(gengo: Gengo, endpoint: String) {
         self.gengo = gengo
         self.endpoint = endpoint
-        super.init(url: URL(string: "")!, cachePolicy: NSURLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: 60)
+        // fill `url` temporarily with any valid URL as self.apiURL is inaccessible before calling self.init()
+        super.init(url: URL(string: "https://example.com")!, cachePolicy: NSURLRequest.CachePolicy.useProtocolCachePolicy, timeoutInterval: 60)
+        // now that `apiURL` is accessible, self.url can be properly set
         self.url = URL(string: apiURL)
         
         self.httpMethod = "GET"
