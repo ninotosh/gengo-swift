@@ -278,7 +278,7 @@ extension Gengo {
     ///
     /// - returns: Nothing, but calls the callback. If both of the GengoOrder and the NSError are nil, it is probably that all the jobs are old.
     func createJobs(_ jobs: [GengoJob], callback: @escaping (GengoOrder?, NSError?) -> ()) {
-        var jobsDictionary: [String: [String: AnyObject]] = [:]
+        var jobsDictionary: [String: [String: Any]] = [:]
         for (index, job) in jobs.enumerated() {
             if job.type == nil {
                 continue
@@ -286,14 +286,14 @@ extension Gengo {
             if job.languagePair == nil {
                 continue
             }
-            let jobDictionary: [String: AnyObject?] = [
-                "type": job.type!.rawValue as Optional<AnyObject>,
-                "slug": job.slug as Optional<AnyObject>,
-                "body_src": job.sourceText as Optional<AnyObject>,
-                "lc_src": job.languagePair!.source.code as Optional<AnyObject>,
-                "lc_tgt": job.languagePair!.target.code as Optional<AnyObject>,
-                "tier": job.languagePair!.tier.rawValue as Optional<AnyObject>,
-                "identifier": job.identifier as Optional<AnyObject>,
+            let jobDictionary: [String: Any?] = [
+                "type": job.type!.rawValue,
+                "slug": job.slug,
+                "body_src": job.sourceText,
+                "lc_src": job.languagePair!.source.code,
+                "lc_tgt": job.languagePair!.target.code,
+                "tier": job.languagePair!.tier.rawValue,
+                "identifier": job.identifier,
                 "auto_approve": job.autoApprove?.toInt(),
                 "comment": job.comment,
                 "custom_data": job.customData,
@@ -311,7 +311,7 @@ extension Gengo {
             let sequence = "job_\(index + 1)"
             jobsDictionary[sequence] = [:]
             for (k, v) in jobDictionary {
-                if let value: AnyObject = v {
+                if let value: Any = v {
                     jobsDictionary[sequence]![k] = value
                 }
             }
