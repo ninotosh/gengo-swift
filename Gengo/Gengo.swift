@@ -22,6 +22,8 @@ extension Gengo {
             if let i = Int(s) {
                 return i
             }
+        } else if let b = value as? Bool {
+            return b ? 1 : 0
         }
         return nil
     }
@@ -798,7 +800,7 @@ public enum GengoJobType: String {
 public enum GengoBool {
     case `true`, `false`
     
-    init(value: AnyObject?) {
+    init(value: Any?) {
         if let i = Gengo.toInt(value) {
             self = (i >= 1) ? .true : .false
         } else {
@@ -812,6 +814,28 @@ public enum GengoBool {
 
     func toInt() -> Int {
         return (self == .true) ? 1 : 0
+    }
+}
+
+func ==(left: Bool, right: GengoBool) -> Bool {
+    return left == right.boolValue
+}
+
+func ==(left: GengoBool, right: Bool) -> Bool {
+    return left.boolValue == right
+}
+
+func !=(left: Bool, right: GengoBool) -> Bool {
+    return !(left == right)
+}
+
+func !=(left: GengoBool, right: Bool) -> Bool {
+    return !(left == right)
+}
+
+extension Bool {
+    init(_ gengoBool: GengoBool) {
+        self = gengoBool.boolValue
     }
 }
 

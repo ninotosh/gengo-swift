@@ -484,21 +484,42 @@ class GengoConvertPrimitiveTests: XCTestCase {
 
 class GengoBoolTests: XCTestCase {
     func test() {
-        XCTAssertEqual(GengoBool(value: true as AnyObject?), GengoBool.true)
-        XCTAssertEqual(GengoBool(value: false as AnyObject?), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: true), GengoBool.true)
+        XCTAssertEqual(GengoBool(value: false), GengoBool.false)
         XCTAssertEqual(GengoBool(value: nil), GengoBool.false)
-        XCTAssertEqual(GengoBool(value: "" as AnyObject?), GengoBool.false)
-        XCTAssertEqual(GengoBool(value: "1" as AnyObject?), GengoBool.true)
-        XCTAssertEqual(GengoBool(value: "0" as AnyObject?), GengoBool.false)
-        XCTAssertEqual(GengoBool(value: 2 as AnyObject?), GengoBool.true)
-        XCTAssertEqual(GengoBool(value: 1 as AnyObject?), GengoBool.true)
-        XCTAssertEqual(GengoBool(value: 0 as AnyObject?), GengoBool.false)
-        XCTAssertEqual(GengoBool(value: -1 as AnyObject?), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: ""), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: "1"), GengoBool.true)
+        XCTAssertEqual(GengoBool(value: "0"), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: 2), GengoBool.true)
+        XCTAssertEqual(GengoBool(value: 1), GengoBool.true)
+        XCTAssertEqual(GengoBool(value: 0), GengoBool.false)
+        XCTAssertEqual(GengoBool(value: -1), GengoBool.false)
         
         XCTAssertEqual(GengoBool.true.toInt(), 1)
         XCTAssertEqual(GengoBool.false.toInt(), 0)
         
         XCTAssertTrue(GengoBool.true.boolValue)
         XCTAssertFalse(GengoBool.false.boolValue)
+        
+        XCTAssert(true == GengoBool.true)
+        XCTAssert(true != GengoBool.false)
+        XCTAssert(false == GengoBool.false)
+        XCTAssert(false != GengoBool.true)
+        XCTAssert(GengoBool.true == true)
+        XCTAssert(GengoBool.true != false)
+        XCTAssert(GengoBool.false == false)
+        XCTAssert(GengoBool.false != true)
+
+        XCTAssertFalse(true == GengoBool.false)
+        XCTAssertFalse(true != GengoBool.true)
+        XCTAssertFalse(false == GengoBool.true)
+        XCTAssertFalse(false != GengoBool.false)
+        XCTAssertFalse(GengoBool.true == false)
+        XCTAssertFalse(GengoBool.true != true)
+        XCTAssertFalse(GengoBool.false == true)
+        XCTAssertFalse(GengoBool.false != false)
+        
+        XCTAssertTrue(Bool(GengoBool.true))
+        XCTAssertFalse(Bool(GengoBool.false))
     }
 }
