@@ -856,7 +856,11 @@ public struct GengoJob: CustomStringConvertible {
     var sourceText: String? {
         didSet {
             if let text = sourceText, slug == nil {
-                slug = text.substring(to: text.characters.index(text.startIndex, offsetBy: 15, limitedBy: text.endIndex)!) + "..."
+                if text.characters.count <= 15 {
+                    slug = text
+                } else {
+                    slug = text.substring(to: text.characters.index(text.startIndex, offsetBy: 15)) + "..."
+                }
             }
         }
     }
