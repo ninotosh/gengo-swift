@@ -3,10 +3,26 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "GengoTests.GengoRequest.init (GengoTests.GengoRequest.Type)(gengo : GengoTests.Gengo, endpoint : Swift.String) -&gt; GengoTests.GengoRequest:GengoRequest.swift">
+         contextName = "GengoTests.GengoJobsTests.(testGetJobs (GengoTests.GengoJobsTests) -&gt; () -&gt; ()).(closure #1):GengoTests.swift">
          <PersistentStrings>
             <PersistentString
-               value = "url">
+               value = "jobs[0].status!">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GengoJob.sourceText.didset:Gengo.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "text.substring(to: 5)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GengoTests.GengoTests.(testGetQuoteText (GengoTests.GengoTests) -&gt; () -&gt; ()).(closure #1):GengoTests.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "tests[i][&quot;unitCount&quot;] as Int">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -19,26 +35,7 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "GengoTests.Gengo.(unmarshalJob in _9D0E0E268F43A1F669BCBE267BE0B26B) (GengoTests.Gengo)(ObjectiveC.NSDictionary) -&gt; GengoTests.GengoJob:Gengo.swift">
-      </ContextState>
-      <ContextState
-         contextName = "GengoTests.GengoJobsTests.(testGetJobs (GengoTests.GengoJobsTests) -&gt; () -&gt; ()).(closure #1):GengoTests.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "jobs[0].status!">
-            </PersistentString>
-         </PersistentStrings>
-      </ContextState>
-      <ContextState
-         contextName = "GengoTests.Gengo.(getJobs (GengoTests.Gengo) -&gt; (Swift.Array&lt;Swift.Int&gt;, callback : (Swift.Array&lt;GengoTests.GengoJob&gt;, Swift.Optional&lt;ObjectiveC.NSError&gt;) -&gt; ()) -&gt; ()).(closure #1):Gengo.swift">
-      </ContextState>
-      <ContextState
-         contextName = "GengoTests.GengoTests.(testGetQuoteText (GengoTests.GengoTests) -&gt; () -&gt; ()).(closure #1):GengoTests.swift">
-         <PersistentStrings>
-            <PersistentString
-               value = "tests[i][&quot;unitCount&quot;] as Int">
-            </PersistentString>
-         </PersistentStrings>
+         contextName = "GengoRequest.init(gengo : Gengo, endpoint : String) -&gt; GengoRequest:GengoRequest.swift">
       </ContextState>
       <ContextState
          contextName = "Gengo.(getLanguages(Gengo) -&gt; (([GengoLanguage], NSError?) -&gt; ()) -&gt; ()).(closure #1):Gengo.swift">
@@ -47,6 +44,23 @@
                value = "language[&quot;unit_type&quot;]">
             </PersistentString>
          </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GengoAccountTests.(testGetStats(GengoAccountTests) -&gt; () -&gt; ()).(closure #1).(implicit closure #2):GengoTests.swift">
+      </ContextState>
+      <ContextState
+         contextName = "GengoTests.Gengo.(unmarshalJob in _9D0E0E268F43A1F669BCBE267BE0B26B) (GengoTests.Gengo)(ObjectiveC.NSDictionary) -&gt; GengoTests.GengoJob:Gengo.swift">
+      </ContextState>
+      <ContextState
+         contextName = "GengoTests.GengoRequest.init (GengoTests.GengoRequest.Type)(gengo : GengoTests.Gengo, endpoint : Swift.String) -&gt; GengoTests.GengoRequest:GengoRequest.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "url">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GengoTests.Gengo.(getJobs (GengoTests.Gengo) -&gt; (Swift.Array&lt;Swift.Int&gt;, callback : (Swift.Array&lt;GengoTests.GengoJob&gt;, Swift.Optional&lt;ObjectiveC.NSError&gt;) -&gt; ()) -&gt; ()).(closure #1):Gengo.swift">
       </ContextState>
       <ContextState
          contextName = "GengoTests.GengoJobsTests.testGetJobsWithParameters (GengoTests.GengoJobsTests)() -&gt; ():GengoTests.swift">
@@ -58,9 +72,6 @@
       </ContextState>
       <ContextState
          contextName = "GengoTests.Gengo.(createJobs (GengoTests.Gengo) -&gt; (Swift.Array&lt;GengoTests.GengoJob&gt;, callback : (Swift.Optional&lt;GengoTests.GengoOrder&gt;, Swift.Optional&lt;ObjectiveC.NSError&gt;) -&gt; ()) -&gt; ()).(closure #1):Gengo.swift">
-      </ContextState>
-      <ContextState
-         contextName = "GengoAccountTests.(testGetStats(GengoAccountTests) -&gt; () -&gt; ()).(closure #1).(implicit closure #2):GengoTests.swift">
       </ContextState>
    </ContextStates>
 </VariablesViewState>
