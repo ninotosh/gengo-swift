@@ -498,7 +498,7 @@ class GengoBoolTests: XCTestCase {
         XCTAssertEqual(GengoBool.true.toInt(), 1)
         XCTAssertEqual(GengoBool.false.toInt(), 0)
         
-        XCTAssertTrue(GengoBool.true)
-        XCTAssertFalse(GengoBool.false)
+        XCTAssertTrue(GengoBool.true.boolValue)
+        XCTAssertFalse(GengoBool.false.boolValue)
     }
 }
