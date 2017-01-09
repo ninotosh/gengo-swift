@@ -5,11 +5,13 @@ open class Gengo {
     let publicKey: String
     let privateKey: String
     let apiHost: String
+    var urlSession: URLSessionProtocol
     
-    init(publicKey: String, privateKey: String, sandbox: Bool = false) {
+    init(publicKey: String, privateKey: String, sandbox: Bool = false, urlSession: URLSessionProtocol = URLSession.shared) {
         self.publicKey = publicKey
         self.privateKey = privateKey
         self.apiHost = sandbox ? "http://api.sandbox.gengo.com/v2/" : "https://api.gengo.com/v2/"
+        self.urlSession = urlSession
     }
 }
 
