@@ -2,3 +2,4 @@ language: objective-c
 xcode_project: Gengo.xcodeproj
 xcode_scheme: Gengo
 xcode_sdk: iphonesimulator
+osx_image: xcode8.2
