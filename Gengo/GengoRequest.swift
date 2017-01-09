@@ -23,7 +23,7 @@ open class GengoRequest: NSMutableURLRequest {
     }
     
     open func access(_ callback: @escaping (AnyObject?, NSError?) -> ()) {
-        let session = URLSession.shared
+        let session = gengo.urlSession
         let dataTask = session.dataTask(with: self as URLRequest, completionHandler: {data, response, error in
             let gengoError = GengoError(optionalData: data, optionalResponse: response, optionalError: error as NSError?)
             
@@ -214,3 +214,20 @@ class GengoPut: GengoPost {
     }
 }
 
+protocol URLSessionProtocol {
+    func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol
+}
+
+// avoid "Value of type 'URLSession' does not conform to specified type 'URLSessionProtocol'"
+// or avoid always appending "as! URLSessionProtocol" to a URLSession variable
+extension URLSession: URLSessionProtocol {
+    internal func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol {
+        return (dataTask(with: request, completionHandler: completionHandler) as URLSessionDataTask) as URLSessionDataTaskProtocol
+    }
+}
+
+protocol URLSessionDataTaskProtocol {
+    func resume()
+}
+
+extension URLSessionDataTask: URLSessionDataTaskProtocol {}

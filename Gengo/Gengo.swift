@@ -5,34 +5,32 @@ open class Gengo {
     let publicKey: String
     let privateKey: String
     let apiHost: String
+    var urlSession: URLSessionProtocol
     
-    init(publicKey: String, privateKey: String, sandbox: Bool = false) {
+    init(publicKey: String, privateKey: String, sandbox: Bool = false, urlSession: URLSessionProtocol = URLSession.shared) {
         self.publicKey = publicKey
         self.privateKey = privateKey
         self.apiHost = sandbox ? "http://api.sandbox.gengo.com/v2/" : "https://api.gengo.com/v2/"
+        self.urlSession = urlSession
     }
 }
 
 // utilities
 extension Gengo {
     class func toInt(_ value: Any?) -> Int? {
-        if let i = value as? Int {
-            return i
+        if let n = value as? NSNumber {
+            return Int(n)
         } else if let s = value as? String {
-            if let i = Int(s) {
-                return i
-            }
-        } else if let b = value as? Bool {
-            return b ? 1 : 0
+            return Int(s)
         }
         return nil
     }
     
     class func toFloat(_ value: Any?) -> Float? {
-        if let f = value as? Float {
-            return f
-        } else if let s = value as? NSString {
-            return s.floatValue
+        if let n = value as? NSNumber {
+            return Float(n)
+        } else if let s = value as? String {
+            return Float(s)
         }
         return nil
     }
