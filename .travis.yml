@@ -1,0 +1,6 @@
+language: objective-c
+xcode_project: Gengo.xcodeproj
+xcode_scheme: Gengo
+xcode_sdk: iphonesimulator10.2
+osx_image: xcode8.2
+script: xcodebuild -project Gengo.xcodeproj -scheme Gengo -destination 'platform=iOS Simulator,OS=10.2,name=iPad Retina' test
