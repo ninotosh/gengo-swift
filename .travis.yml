@@ -4,4 +4,4 @@ xcode_scheme: Gengo
 xcode_sdk: iphonesimulator10.2
 osx_image: xcode8.2
 before_script: xcodebuild -project Gengo.xcodeproj -scheme Gengo -sdk iphonesimulator10.2 build
-script: xctool -project Gengo.xcodeproj -scheme Gengo -sdk iphonesimulator10.2 -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.2' test
+script: xcodebuild -project Gengo.xcodeproj -scheme Gengo -sdk iphonesimulator10.2 -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.2' test
