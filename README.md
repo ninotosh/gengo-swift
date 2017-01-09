@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/ninotoshi/gengo-swift.svg?branch=master)](https://travis-ci.org/ninotoshi/gengo-swift)
+
+
 gengo-swift
 ===========
 
