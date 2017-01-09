@@ -1,4 +1,3 @@
-import UIKit
 import XCTest
 
 let TIMEOUT: TimeInterval = 5
@@ -559,10 +558,13 @@ class GengoGlossaryTests: XCTestCase {
 
 class GengoConvertPrimitiveTests: XCTestCase {
     func testToInt() {
-        XCTAssertEqual(Gengo.toInt(1)!, 1)
-        XCTAssertEqual(Gengo.toInt("1")!, 1)
-        XCTAssertEqual(Gengo.toInt("0")!, 0)
-        XCTAssertEqual(Gengo.toInt(1.8)!, 1)
+        XCTAssertEqual(Gengo.toInt(1), 1)
+        XCTAssertEqual(Gengo.toInt("1"), 1)
+        XCTAssertEqual(Gengo.toInt("0"), 0)
+        XCTAssertEqual(Gengo.toInt(1.8 as Float), 1)
+        XCTAssertEqual(Gengo.toInt(1.8 as Double), 1)
+        XCTAssertEqual(Gengo.toInt(true), 1)
+        XCTAssertEqual(Gengo.toInt(false), 0)
 
         XCTAssertNil(Gengo.toInt(""))
         XCTAssertNil(Gengo.toInt("a"))
@@ -570,13 +572,16 @@ class GengoConvertPrimitiveTests: XCTestCase {
     }
     
     func testToFloat() {
-        XCTAssertEqual(Gengo.toFloat(1.8)!, 1.8 as Float)
-        XCTAssertEqual(Gengo.toFloat(1)!, 1 as Float)
-        XCTAssertEqual(Gengo.toFloat("1.8")!, 1.8 as Float)
-        XCTAssertEqual(Gengo.toFloat("1")!, 1 as Float)
-        XCTAssertEqual(Gengo.toFloat("")!, 0.0 as Float)
-        XCTAssertEqual(Gengo.toFloat("a")!, 0.0 as Float)
+        XCTAssertEqual(Gengo.toFloat(1.8 as Float), 1.8)
+        XCTAssertEqual(Gengo.toFloat(1.8 as Double), 1.8)
+        XCTAssertEqual(Gengo.toFloat(1 as Int), 1.0)
+        XCTAssertEqual(Gengo.toFloat("1.8"), 1.8)
+        XCTAssertEqual(Gengo.toFloat("1"), 1.0)
+        XCTAssertEqual(Gengo.toFloat(true), 1.0)
+        XCTAssertEqual(Gengo.toFloat(false), 0.0)
 
+        XCTAssertNil(Gengo.toFloat(""))
+        XCTAssertNil(Gengo.toFloat("a"))
         XCTAssertNil(Gengo.toFloat(nil))
     }
     
