@@ -4,7 +4,7 @@
 gengo-swift
 ===========
 
-A fully objectified client in Swift for the Gengo API
+A fully objectified client in Swift for the [Gengo API](http://developers.gengo.com/overview/)
 
 ## Usage
 
@@ -29,14 +29,16 @@ job2.sourceText = "API呼出しのテスト"
 job2.slug = "テストslug"
 
 gengo.createJobs([job1, job2]) {order, error in
-  switch order!.jobCount! {
-  case 0:
-    println("I ordered no jobs.")
-  case 1:
-    println("I ordered 1 job.")
-  default:
-    println("I ordered \(order!.jobCount!) jobs.")
-  }
+    switch order?.jobCount {
+    case 0?:
+        print("I ordered no jobs.")
+    case 1?:
+        print("I ordered 1 job.")
+    case let count?:
+        print("I ordered \(count) jobs.")
+    default:
+        print("job count is nil")
+    }
 }
 ```
 
