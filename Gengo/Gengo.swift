@@ -43,70 +43,84 @@ extension Gengo {
     }
 }
 
-public enum GengoErrorCode: Int {
-    case notEnoughCredits = 2700
+public enum GengoError: Error {
+    case systemError(error: Error)
+    case httpError(statusCode: Int)
+    case invalidResponseError(URLResponse?)
+    case applicationError(code: Int?, message: String?)
+    case invalidDataError(data: Data)
+    case nilDataError()
 }
 
-open class GengoError: NSError {
-    init?(optionalData: Data?, optionalResponse: URLResponse?, optionalError: NSError?) {
-        let GENGO_DOMAIN = "com.gengo.api"
+extension Gengo {
+    class func toError(
+            data optionalData: Data?,
+            response optionalResponse: URLResponse?,
+            error optionalError: Error?
+        ) -> GengoError? {
         
-        var instance: NSError?
-        
-        if let error = optionalError {
-            instance = error
+        if let e = optionalError {
+            return toError(error: e)
         }
-        
-        if let response = optionalResponse {
-            if let httpResponse = response as? HTTPURLResponse {
-                let code = httpResponse.statusCode
-                if code < 200 || 300 <= code {
-                    var userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: HTTPURLResponse.localizedString(forStatusCode: code)]
-                    if let i = instance {
-                        userInfo[NSUnderlyingErrorKey] = i
-                    }
-                    instance = NSError(domain: GENGO_DOMAIN, code: code, userInfo: userInfo)
-                }
+
+        if let httpResponse = optionalResponse as? HTTPURLResponse {
+            if let gengoError = toError(response: httpResponse) {
+                return gengoError
             }
         }
         
         if let data = optionalData {
-            if let json = (try? JSONSerialization.jsonObject(
+            return toError(data: data)
+        }
+        
+        return GengoError.nilDataError()
+    }
+
+    class func toError(error: Error) -> GengoError {
+        return GengoError.systemError(error: error)
+    }
+
+    class func toError(response: HTTPURLResponse) -> GengoError? {
+        let code = response.statusCode
+        if 200..<300 ~= code {
+            return nil
+        }
+
+        return GengoError.httpError(statusCode: code)
+    }
+
+    class func toError(data: Data) -> GengoError? {
+        if let json = (
+            try? JSONSerialization.jsonObject(
                 with: data,
-                options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: AnyObject] {
-                var isOK = false
-                var code: Int?
-                var message: String?
-                if let opstat = json["opstat"] as? String {
-                    if opstat == "ok" {
-                        isOK = true
+                options: JSONSerialization.ReadingOptions.mutableContainers
+            )
+            ) as? [String: AnyObject] {
+            if let opstat = json["opstat"] as? String {
+                if opstat == "ok" {
+                    return nil
+                }
+                
+                var code: Int? = nil
+                var message: String? = nil
+                if let err = json["err"] as? [String: AnyObject] {
+                    if let ec = err["code"] as? Int {
+                        code = ec
+                    } else if let ec = err["code"] as? String {
+                        code = Int(ec)
                     } else {
-                        if let err = json["err"] as? [String: AnyObject] {
-                            code = err["code"] as? Int
-                            message = err["msg"] as? String
-                        }
+                        code = nil
                     }
+                    message = err["msg"] as? String
                 }
-                if !isOK {
-                    var userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: (message ?? "operation failed")]
-                    if let i = instance {
-                        userInfo[NSUnderlyingErrorKey] = i
-                    }
-                    instance = NSError(domain: GENGO_DOMAIN, code: (code ?? 0), userInfo: userInfo)
-                }
+                return GengoError.applicationError(
+                    code: code,
+                    message: message
+                )
             }
         }
         
-        if let i = instance {
-            super.init(domain: i.domain, code: i.code, userInfo: i.userInfo)
-            return
-        }
-
-        return nil
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        return GengoError.invalidDataError(data: data)
     }
 }
 
@@ -274,8 +288,7 @@ extension Gengo {
 // Jobs methods
 extension Gengo {
     /// Posts GengoJobs.
-    ///
-    /// - returns: Nothing, but calls the callback. If both of the GengoOrder and the NSError are nil, it is probably that all the jobs are old.
+    /// If both of the GengoOrder and the GengoError are nil, it is probably that all the jobs are duplicates.
     func createJobs(_ jobs: [GengoJob], callback: @escaping (GengoOrder?, GengoError?) -> ()) {
         var jobsDictionary: [String: [String: Any]] = [:]
         for (index, job) in jobs.enumerated() {
@@ -330,7 +343,7 @@ extension Gengo {
     }
     
     /// - parameter parameters["status"]:: GengoJobStatus
-    /// - parameter parameters["after"]:: NSDate or Int
+    /// - parameter parameters["after"]:: Date or Int
     /// - parameter parameters["count"]:: Int
     func getJobs(_ parameters: [String: Any] = [:], callback: @escaping ([GengoJob], GengoError?) -> ()) {
         var q: [String: AnyObject] = [:]

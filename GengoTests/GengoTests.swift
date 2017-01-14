@@ -600,11 +600,12 @@ class GengoErrorTests: XCTestCase {
         struct Test {
             let data: Data?
             let response: URLResponse?
-            let error: NSError?
+            let error: Error?
             let expectNil: Bool
         }
+
         let tests: [Test] = [
-            Test(data: nil, response: nil, error: nil, expectNil: true),
+            Test(data: nil, response: nil, error: nil, expectNil: false),
             Test(
                 data: nil,
                 response: HTTPURLResponse(
@@ -616,9 +617,25 @@ class GengoErrorTests: XCTestCase {
                 error: nil,
                 expectNil: false
             ),
+            Test(
+                data: "{\"opstat\": \"ok\"}".data(using: String.Encoding.utf8),
+                response: HTTPURLResponse(
+                    url: URL(string: "http://example.com")!,
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: nil
+                ),
+                error: nil,
+                expectNil: true
+            ),
         ]
+
         for test in tests {
-            let gengoError = GengoError(optionalData: test.data, optionalResponse: test.response, optionalError: test.error)
+            let gengoError = Gengo.toError(
+                data: test.data,
+                response: test.response,
+                error: test.error
+            )
             XCTAssertTrue((gengoError == nil) == test.expectNil)
         }
     }

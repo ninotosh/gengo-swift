@@ -25,7 +25,7 @@ open class GengoRequest: NSMutableURLRequest {
     open func access(_ callback: @escaping (AnyObject?, GengoError?) -> ()) {
         let session = gengo.urlSession
         let dataTask = session.dataTask(with: self as URLRequest, completionHandler: {data, response, error in
-            let gengoError = GengoError(optionalData: data, optionalResponse: response, optionalError: error as NSError?)
+            let gengoError = Gengo.toError(data: data, response: response, error: error)
             
             var result: AnyObject?
             if let d = data, let json = (
