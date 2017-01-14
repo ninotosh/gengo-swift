@@ -22,7 +22,7 @@ open class GengoRequest: NSMutableURLRequest {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open func access(_ callback: @escaping (AnyObject?, NSError?) -> ()) {
+    open func access(_ callback: @escaping (AnyObject?, GengoError?) -> ()) {
         let session = gengo.urlSession
         let dataTask = session.dataTask(with: self as URLRequest, completionHandler: {data, response, error in
             let gengoError = GengoError(optionalData: data, optionalResponse: response, optionalError: error as NSError?)

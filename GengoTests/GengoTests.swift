@@ -14,7 +14,7 @@ class MockURLSession: URLSessionProtocol {
         urlResponse = HTTPURLResponse(url: URL(string: "http://example.com")!, statusCode: statusCode, httpVersion: nil, headerFields: nil)
         error = erred ? NSError(domain: "\(MockURLSession.self)", code: 0, userInfo: nil) : nil
     }
-
+    
     func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol {
         DispatchQueue.main.async {
             completionHandler(self.data, self.urlResponse, self.error)
@@ -77,7 +77,7 @@ class GengoAccountTests: XCTestCase {
         gengo.getStats() {account, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             guard let since = account.since else {
                 XCTFail("\(account.since)")
                 return
@@ -96,7 +96,7 @@ class GengoAccountTests: XCTestCase {
         gengo.getBalance() {account, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(account.creditPresent, 123.45)
             
             self.expectation!.fulfill()
@@ -112,7 +112,7 @@ class GengoAccountTests: XCTestCase {
         gengo.getPreferredTranslators() {translators, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(translators.count, 4)
             
             for translator in translators {
@@ -125,7 +125,7 @@ class GengoAccountTests: XCTestCase {
             
             self.expectation!.fulfill()
         }
-
+        
         waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
 }
@@ -145,9 +145,9 @@ class GengoServiceTests: XCTestCase {
         gengo.getLanguages() {languages, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(languages.count, 2)
-
+            
             var japanese: GengoLanguage?
             for language in languages {
                 if language.code == "ja" {
@@ -157,7 +157,7 @@ class GengoServiceTests: XCTestCase {
             
             XCTAssertEqual(japanese?.localizedName, "日本語")
             XCTAssertEqual(japanese?.unitType, GengoLanguageUnitType.Character)
-
+            
             self.expectation!.fulfill()
         }
         
@@ -170,9 +170,9 @@ class GengoServiceTests: XCTestCase {
         gengo.getLanguagePairs(GengoLanguage(code: "ja")) {pairs, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(pairs.count, 2)
-
+            
             for pair in pairs {
                 if pair.source.code != "ja" {
                     XCTFail("invalid language code: \(pair.source.code)")
@@ -187,11 +187,11 @@ class GengoServiceTests: XCTestCase {
     
     func testGetQuoteText() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{\"jobs\":{\"job_2\":{\"unit_count\":8,\"credits\":0.24,\"eta\":15300,\"currency\":\"USD\",\"type\":\"text\",\"lc_src_detected\":\"ja\"},\"job_1\":{\"unit_count\":5,\"credits\":0.35,\"eta\":15300,\"currency\":\"USD\",\"type\":\"text\",\"lc_src_detected\":\"\"}}}}")
-
+        
         gengo.getQuoteText(GengoFixtures().testJobs) {jobs, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(jobs.count, 2)
             
             for job in jobs {
@@ -205,7 +205,7 @@ class GengoServiceTests: XCTestCase {
                     XCTFail("invalid source language")
                 }
             }
-
+            
             self.expectation!.fulfill()
         }
         
@@ -229,7 +229,7 @@ class GengoServiceTests: XCTestCase {
         gengo.getQuoteFile(fileJobs) {jobs, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(jobs.count, 2)
             
             for job in jobs {
@@ -252,7 +252,7 @@ class GengoServiceTests: XCTestCase {
             
             self.expectation!.fulfill()
         }
-
+        
         waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
 }
@@ -268,10 +268,10 @@ class GengoJobsTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
     }
-
+    
     func testCreateJobs() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{\"order_id\":65465,\"job_count\":2,\"credits_used\":\"0.59\",\"currency\":\"USD\"}}")
-
+        
         gengo.createJobs(GengoFixtures().testJobs) {order, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
@@ -292,7 +292,7 @@ class GengoJobsTests: XCTestCase {
         gengo.getJobs(["count": 1]) {jobs, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(jobs.count, 1)
             
             self.expectation!.fulfill()
@@ -307,7 +307,7 @@ class GengoJobsTests: XCTestCase {
         gengo.getJobs([659080, 659079]) {jobs, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(jobs.count, 2)
             
             self.expectation!.fulfill()
@@ -331,23 +331,23 @@ class GengoJobTests: XCTestCase {
     
     func testGetJob() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{\"job\":{\"job_id\":\"659079\",\"order_id\":\"65465\",\"slug\":\"テストslug\",\"body_src\":\"API呼出しのテスト\",\"lc_src\":\"ja\",\"lc_tgt\":\"en\",\"unit_count\":\"8\",\"tier\":\"standard\",\"credits\":\"0.24\",\"currency\":\"USD\",\"status\":\"available\",\"eta\":15300,\"ctime\":1483701101,\"auto_approve\":\"0\"}}}")
-
+        
         gengo.getJob(659079, mt: GengoBool.false) {job, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(job?.id, 659079)
             XCTAssertEqual(job?.order?.id, 65465)
             
             self.expectation!.fulfill()
         }
-
+        
         waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
     
     func testPutJob() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{}}")
-
+        
         var feedback = GengoFeedback()
         feedback.rating = 5
         feedback.commentForTranslator = "thank you"
@@ -365,11 +365,11 @@ class GengoJobTests: XCTestCase {
     
     func testDeleteJob() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{}}")
-
+        
         gengo.deleteJob(659645) {error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             self.expectation!.fulfill()
         }
         
@@ -378,13 +378,13 @@ class GengoJobTests: XCTestCase {
     
     func testGetRevisions() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{\"job_id\":\"659415\",\"revisions\":[{\"ctime\":1483852599,\"rev_id\":\"1438747\"}]}}")
-
+        
         gengo.getRevisions(659415) {revisions, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(revisions.count, 1)
-
+            
             for revision in revisions {
                 guard let id = revision.id else {
                     XCTFail("\(revision.id)")
@@ -405,9 +405,9 @@ class GengoJobTests: XCTestCase {
         gengo.getRevision(659415, revisionID: 1438747) {revision, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertNotNil(revision?.body)
-
+            
             self.expectation!.fulfill()
         }
         
@@ -416,13 +416,13 @@ class GengoJobTests: XCTestCase {
     
     func testGetFeedback() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{\"feedback\":{\"rating\":\"0.0\",\"for_translator\":null}}}")
-
+        
         gengo.getFeedback(659412) {feedback, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
             
             XCTAssertNotNil(feedback)
-
+            
             self.expectation!.fulfill()
         }
         
@@ -445,13 +445,13 @@ class GengoJobTests: XCTestCase {
     // http://developers.gengo.com/v2/api_methods/job/#comments-get
     func testGetComments() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{\"thread\":[{\"body\":\"....\",\"author\":\"translator\",\"ctime\":1266322028},{\"body\":\"....\",\"author\":\"customer\",\"ctime\":1266324432}]}}")
-
+        
         gengo.getComments(659573) {comments, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(comments.count, 2)
-
+            
             self.expectation!.fulfill()
         }
         
@@ -473,11 +473,11 @@ class GengoOrderTests: XCTestCase {
     
     func testGetOrder() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{\"order\":{\"order_id\":\"65642\",\"total_credits\":\"0.59\",\"total_units\":\"13\",\"currency\":\"USD\",\"jobs_available\":[\"659572\",\"659573\"],\"jobs_pending\":[],\"jobs_reviewable\":[],\"jobs_approved\":[],\"jobs_revising\":[],\"jobs_queued\":\"0\",\"total_jobs\":\"2\"}}}")
-
+        
         gengo.getOrder(65642) {order, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(order?.id, 65642)
             XCTAssertEqual(order?.jobCount, 2)
             XCTAssertEqual(order?.credit?.amount, 0.59)
@@ -491,7 +491,7 @@ class GengoOrderTests: XCTestCase {
     
     func testDeleteOrder() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{}}")
-
+        
         gengo.deleteOrder(65642) {error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
@@ -518,13 +518,13 @@ class GengoGlossaryTests: XCTestCase {
     // http://developers.gengo.com/v2/api_methods/glossary/#glossaries-get
     func testGetGlossaries() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":[{\"customer_user_id\":50110,\"source_language_id\":8,\"target_languages\":[[14,\"ja\"]],\"id\":115,\"is_public\":false,\"unit_count\":2,\"description\":null,\"source_language_code\":\"en-US\",\"title\":\"1342666627_50110_en_ja_glossary.csv\",\"status\":1}]}")
-
+        
         gengo.getGlossaries() {glossaries, error in
             XCTAssertNil(error)
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
-
+            
             XCTAssertEqual(glossaries.count, 1)
-
+            
             for glossary in glossaries {
                 guard let id = glossary.id else {
                     XCTFail("\(glossary.id)")
@@ -532,13 +532,13 @@ class GengoGlossaryTests: XCTestCase {
                 }
                 XCTAssertGreaterThan(id, 0)
             }
-
+            
             self.expectation!.fulfill()
         }
         
         waitForExpectations(timeout: TIMEOUT, handler: nil)
     }
-
+    
     // http://developers.gengo.com/v2/api_methods/glossary/#glossary-get
     func testGetGlossary() {
         gengo.urlSession = MockURLSession(dataString: "{\"opstat\":\"ok\",\"response\":{\"customer_user_id\":50110,\"source_language_id\":8,\"target_languages\":[[14,\"ja\"]],\"id\":115,\"is_public\":false,\"unit_count\":2,\"description\":null,\"source_language_code\":\"en-US\",\"title\":\"1342666627_50110_en_ja_glossary.csv\",\"status\":1}}")
@@ -548,7 +548,7 @@ class GengoGlossaryTests: XCTestCase {
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
             
             XCTAssertEqual(glossary?.id, 115)
-
+            
             self.expectation!.fulfill()
         }
         
@@ -565,7 +565,7 @@ class GengoConvertPrimitiveTests: XCTestCase {
         XCTAssertEqual(Gengo.toInt(1.8 as Double), 1)
         XCTAssertEqual(Gengo.toInt(true), 1)
         XCTAssertEqual(Gengo.toInt(false), 0)
-
+        
         XCTAssertNil(Gengo.toInt(""))
         XCTAssertNil(Gengo.toInt("a"))
         XCTAssertNil(Gengo.toInt(nil))
@@ -579,7 +579,7 @@ class GengoConvertPrimitiveTests: XCTestCase {
         XCTAssertEqual(Gengo.toFloat("1"), 1.0)
         XCTAssertEqual(Gengo.toFloat(true), 1.0)
         XCTAssertEqual(Gengo.toFloat(false), 0.0)
-
+        
         XCTAssertNil(Gengo.toFloat(""))
         XCTAssertNil(Gengo.toFloat("a"))
         XCTAssertNil(Gengo.toFloat(nil))
@@ -588,10 +588,39 @@ class GengoConvertPrimitiveTests: XCTestCase {
     func testToDate() {
         XCTAssertEqual(Gengo.toDate("1")!, Date(timeIntervalSince1970: 1))
         XCTAssertEqual(Gengo.toDate(1)!, Date(timeIntervalSince1970: 1))
-
+        
         XCTAssertNil(Gengo.toDate(""))
         XCTAssertNil(Gengo.toDate("a"))
         XCTAssertNil(Gengo.toDate(nil))
+    }
+}
+
+class GengoErrorTests: XCTestCase {
+    func test() {
+        struct Test {
+            let data: Data?
+            let response: URLResponse?
+            let error: NSError?
+            let expectNil: Bool
+        }
+        let tests: [Test] = [
+            Test(data: nil, response: nil, error: nil, expectNil: true),
+            Test(
+                data: nil,
+                response: HTTPURLResponse(
+                    url: URL(string: "http://example.com")!,
+                    statusCode: 500,
+                    httpVersion: nil,
+                    headerFields: nil
+                ),
+                error: nil,
+                expectNil: false
+            ),
+        ]
+        for test in tests {
+            let gengoError = GengoError(optionalData: test.data, optionalResponse: test.response, optionalError: test.error)
+            XCTAssertTrue((gengoError == nil) == test.expectNil)
+        }
     }
 }
 
@@ -622,7 +651,7 @@ class GengoBoolTests: XCTestCase {
         XCTAssert(GengoBool.true != false)
         XCTAssert(GengoBool.false == false)
         XCTAssert(GengoBool.false != true)
-
+        
         XCTAssertFalse(true == GengoBool.false)
         XCTAssertFalse(true != GengoBool.true)
         XCTAssertFalse(false == GengoBool.true)
