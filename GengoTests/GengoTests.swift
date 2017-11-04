@@ -79,7 +79,7 @@ class GengoAccountTests: XCTestCase {
             XCTAssertEqual((gengo.urlSession as? MockURLSession)?.sessionDataTask.resumeCalled, 1)
             
             guard let since = account.since else {
-                XCTFail("\(account.since)")
+                XCTFail("account.since == nil")
                 return
             }
             XCTAssertLessThan(since.timeIntervalSince1970, Date().timeIntervalSince1970)
@@ -117,7 +117,7 @@ class GengoAccountTests: XCTestCase {
             
             for translator in translators {
                 guard let id = translator.id else {
-                    XCTFail("\(translator.id)")
+                    XCTFail("translator.id == nil")
                     return
                 }
                 XCTAssertGreaterThan(id, 0)
@@ -244,7 +244,7 @@ class GengoServiceTests: XCTestCase {
                 }
                 
                 guard let identifier = job.identifier else {
-                    XCTFail("\(job.identifier)")
+                    XCTFail("job.identifier == nil")
                     return
                 }
                 XCTAssertFalse(identifier.isEmpty)
@@ -387,7 +387,7 @@ class GengoJobTests: XCTestCase {
             
             for revision in revisions {
                 guard let id = revision.id else {
-                    XCTFail("\(revision.id)")
+                    XCTFail("revision.id == nil")
                     return
                 }
                 XCTAssertGreaterThan(id, 0)
@@ -527,7 +527,7 @@ class GengoGlossaryTests: XCTestCase {
             
             for glossary in glossaries {
                 guard let id = glossary.id else {
-                    XCTFail("\(glossary.id)")
+                    XCTFail("glossary.id == nil")
                     return
                 }
                 XCTAssertGreaterThan(id, 0)

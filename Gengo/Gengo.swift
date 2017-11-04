@@ -19,7 +19,7 @@ open class Gengo {
 extension Gengo {
     class func toInt(_ value: Any?) -> Int? {
         if let n = value as? NSNumber {
-            return Int(n)
+            return n.intValue
         } else if let s = value as? String {
             return Int(s)
         }
@@ -28,7 +28,7 @@ extension Gengo {
     
     class func toFloat(_ value: Any?) -> Float? {
         if let n = value as? NSNumber {
-            return Float(n)
+            return n.floatValue
         } else if let s = value as? String {
             return Float(s)
         }
@@ -266,7 +266,7 @@ extension Gengo {
             if let unwrappedJobs = unwrappedResult["jobs"] as? [String: [String : AnyObject]] {
                 for (key, jobDictionary) in unwrappedJobs {
                     // "job_3" -> ["job", "3"] -> "3" -> 3 -> 2
-                    let i = Int(key.characters.split(whereSeparator: {$0 == "_"}).map { String($0) }[1])! - 1
+                    let i = Int(key.split(whereSeparator: {$0 == "_"}).map { String($0) }[1])! - 1
                     var job = jobs[i]
                     job.credit = Gengo.toMoney(jobDictionary)
                     job.eta = Gengo.toInt(jobDictionary["eta"])
@@ -865,7 +865,7 @@ public struct GengoFile {
         
         var mime =  "application/octet-stream";
         if let identifier = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (name as NSString).pathExtension as CFString, nil)?.takeRetainedValue() {
-            if let m = UTTypeCopyPreferredTagWithClass(identifier, kUTTagClassMIMEType)?.takeRetainedValue() as? String {
+            if let m = UTTypeCopyPreferredTagWithClass(identifier, kUTTagClassMIMEType)?.takeRetainedValue() as String? {
                 mime = m
             }
         }
@@ -890,10 +890,10 @@ public struct GengoJob: CustomStringConvertible {
     var sourceText: String? {
         didSet {
             if let text = sourceText, slug == nil {
-                if text.characters.count <= 15 {
+                if text.count <= 15 {
                     slug = text
                 } else {
-                    slug = text.substring(to: text.characters.index(text.startIndex, offsetBy: 15)) + "..."
+                    slug = text.prefix(15) + "..."
                 }
             }
         }
@@ -932,7 +932,7 @@ public struct GengoJob: CustomStringConvertible {
     init() {}
     
     public var description: String {
-        return "GengoJob(\(languagePair))"
+        return "GengoJob" + (languagePair == nil ? "" : "(\(languagePair!))")
     }
 }
 
@@ -996,7 +996,7 @@ public struct GengoOrder: CustomStringConvertible {
     init() {}
     
     public var description: String {
-        return "GengoOrder#\(id)"
+        return "GengoOrder" + (id == nil ? "" : "#\(id!)")
     }
 }
 
